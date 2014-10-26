@@ -1,0 +1,8 @@
+Debug/
+Release/
+UnitTest/
+*/Debug/
+*/Release/
+*/UnitTest/
+*.user
+*.opensdf
