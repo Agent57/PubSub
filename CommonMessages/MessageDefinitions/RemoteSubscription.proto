@@ -1,0 +1,6 @@
+package Exchange;
+
+message RemoteSubscription
+{
+  required int32 SubscriptionId=1;
+}

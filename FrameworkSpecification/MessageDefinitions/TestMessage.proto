@@ -1,0 +1,9 @@
+package Exchange;
+
+message TestMessage
+{
+  optional int32 Number  = 1;
+  optional string Text = 2;
+  optional float Float = 3;
+  optional bytes ByteArray = 4;
+}

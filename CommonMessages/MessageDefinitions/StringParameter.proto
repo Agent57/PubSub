@@ -1,0 +1,6 @@
+package Exchange;
+
+message StringParameter
+{
+  required string Data=1;
+}

@@ -1,0 +1,8 @@
+package Exchange;
+
+message Wrapper
+{
+  required string MessageId=1;
+  required bytes Payload=2;
+  required uint32 PayloadSize=3;
+}
