@@ -1,4 +1,4 @@
-#pragma warning (disable:4251)
+//#pragma warning (disable:4251)
 #pragma once
 
 #include "LogEventData.h"
@@ -43,7 +43,7 @@ private:
   std::mutex m_handlerLock;
   std::condition_variable m_conditional;
   LogEventQueuePtr m_queue;
-  LogEventQueuePtr m_events;
+  LogEventQueuePtr m_buffer;
   std::chrono::high_resolution_clock::time_point m_start;
   std::atomic_bool m_enabled;
   std::atomic_bool m_running;
@@ -58,15 +58,15 @@ private:
   void LogWorker();
   void CallLogHandlers(const LogEventDataPtr& pLog);
   void ProcessLogEvents(const LogEventQueuePtr& events);
-  void GetEventList();
+  void BufferEventQueue();
 
 public:
   static Logger& Singleton();
   void SetLogLevel(const LogLevel level);
   const std::chrono::high_resolution_clock::time_point StartTime() const;
   bool CheckLogLevel(const LogLevel level) const;
-  void LoggingEnabled(bool enable);
-  bool LoggingEnabled() const;
+  void Enabled(bool enable);
+  bool Enabled() const;
   void LogStream(const LogEventDataPtr& pLog);
   void Shutdown();
   void AttachHandler(const LogEventHandlerPtr& pHandler);

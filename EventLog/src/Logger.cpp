@@ -18,7 +18,7 @@ Logger& Logger::Singleton()
 Logger::Logger()
 {
   m_queue = std::make_shared<LogEventQueue>();
-  m_events = std::make_shared<LogEventQueue>();
+  m_buffer = std::make_shared<LogEventQueue>();
   m_start = std::chrono::high_resolution_clock::now();
   m_enabled =  true;
   m_max_level = Trace;
@@ -39,7 +39,9 @@ Logger::Logger()
 Logger::~Logger()
 {
   Shutdown();
-  CallLogHandlers(std::make_shared<LogEventData>(Info, "Application logging complete", __FILE__, __FUNCTION__, __LINE__));
+  CallLogHandlers(std::make_shared<LogEventData>(Info,
+                                                 "Application logging complete",
+                                                 __FILE__, __FUNCTION__, __LINE__));
 }
 
 void Logger::Shutdown()
@@ -54,7 +56,9 @@ void Logger::Shutdown()
     m_logger.join();
 
   // Finish processing any remaining log events
-  CallLogHandlers(std::make_shared<LogEventData>(Warning, "<<< Flushing log event queue before completing shutdown >>>", __FILE__, __FUNCTION__, __LINE__));
+  CallLogHandlers(std::make_shared<LogEventData>(Warning,
+                                                 "<<< Flushing log event queue before completing shutdown >>>",
+                                                 __FILE__, __FUNCTION__, __LINE__));
   ProcessLogEvents(m_queue);
 }
 
@@ -77,20 +81,16 @@ bool Logger::CheckLogLevel(LogLevel level) const
   return level <= m_max_level && m_enabled;
 }
 
-void Logger::LoggingEnabled(bool enable)
+void Logger::Enabled(bool enable)
 {
   if (m_enabled == enable)
     return;
 
   m_enabled = enable;
-
-  if (m_enabled)
-    LoggerInfo("Logging output is now enabled")
-  else
-    LoggerInfo("Logging output has been disabled");
+  LoggerInfo("Logging output is now " << m_enabled ? "enabled" : "disabled");
 }
 
-bool Logger::LoggingEnabled() const
+bool Logger::Enabled() const
 {
   return m_enabled;
 }
@@ -106,22 +106,20 @@ void Logger::LogWorker()
 {
   while(m_running)
   {
-    GetEventList();
-    ProcessLogEvents(m_events);
+    BufferEventQueue();
+    ProcessLogEvents(m_buffer);
   }
 }
 
-void Logger::GetEventList()
+void Logger::BufferEventQueue()
 {
   if (m_queue->empty())
     m_conditional.wait(std::unique_lock<std::mutex>(m_lock));
 
   std::lock_guard<std::mutex> lock(m_lock);
-  if(!m_queue->empty())
-  {
-    m_events = m_queue;
-    m_queue = std::make_shared<LogEventQueue>();
-  }
+  auto temp = m_buffer;
+  m_buffer = m_queue;
+  m_queue = temp;
 }
 
 void Logger::ProcessLogEvents(const LogEventQueuePtr& events)
@@ -130,9 +128,7 @@ void Logger::ProcessLogEvents(const LogEventQueuePtr& events)
   {
     const LogEventDataPtr pLog = events->front();
     events->pop_front();
-
-    if(pLog != nullptr)
-      CallLogHandlers(pLog);
+    CallLogHandlers(pLog);
   }
 }
 
@@ -164,7 +160,7 @@ void ConsoleLogger::HandleLogEvent(const LogEventDataPtr& pLog)
 
   // Format log message output for the console
   std::cout << std::right << std::setfill('0') << std::setw(8) << pLog->DisplayTime()
-    << "  " << std::setw(5)<< pLog->ThreadId() << std::setfill(' ')
+    << "  " << std::setw(5) << pLog->ThreadId() << std::setfill(' ')
     << "  " << std::left << std::setw(9) << pLog->Level()
     << pLog->Text() << std::endl;
 }
