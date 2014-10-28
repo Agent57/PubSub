@@ -1,5 +1,5 @@
-#include "../include/LogEventData.h"
-#include "../include/Logger.h"
+#include "LogEventData.h"
+#include "Logger.h"
 
 #include <iomanip>
 

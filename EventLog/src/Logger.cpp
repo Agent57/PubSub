@@ -1,8 +1,8 @@
 #include <windows.h>
 
-#include "../include/Logger.h"
-#include "../include/IDELogger.h"
-#include "../include/ConsoleLogger.h"
+#include "Logger.h"
+#include "IDELogger.h"
+#include "ConsoleLogger.h"
 
 #include <chrono>
 #include <iomanip>

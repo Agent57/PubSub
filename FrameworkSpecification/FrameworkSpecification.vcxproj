@@ -71,7 +71,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\FrameworkSpecification;..\CommonMessages\MessageDefinitions;..\Framework;..\Thirdparty\protobuf\include;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\EventLog\include;..\FrameworkSpecification;..\CommonMessages\MessageDefinitions;..\Framework;..\Thirdparty\protobuf\include;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <AdditionalOptions>/wd4996</AdditionalOptions>
@@ -94,7 +94,7 @@ echo $(ProjectDir)\MessageDefinitions\ProtoBuild.bat $(ProjectDir)</Command>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\FrameworkSpecification;..\CommonMessages\MessageDefinitions;..\Framework;..\Thirdparty\protobuf\include;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\EventLog\include;..\FrameworkSpecification;..\CommonMessages\MessageDefinitions;..\Framework;..\Thirdparty\protobuf\include;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;UNIT_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <AdditionalOptions>/wd4996</AdditionalOptions>
@@ -119,7 +119,7 @@ echo $(ProjectDir)\MessageDefinitions\ProtoBuild.bat</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\FrameworkSpecification;..\CommonMessages\MessageDefinitions;..\Framework;..\Thirdparty\protobuf\include;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\EventLog\include;..\FrameworkSpecification;..\CommonMessages\MessageDefinitions;..\Framework;..\Thirdparty\protobuf\include;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
