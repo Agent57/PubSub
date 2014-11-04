@@ -15,6 +15,7 @@
 #include "FrameworkManager.h"
 #include "Broker.h"
 #include "MessageLoopRunner.h"
+#include "ConsoleLogger.h"
 
 #include <iostream>
 #include <thread>
@@ -22,6 +23,9 @@
 
 int main(int argc, char** argv)
 {
+  Logger::Singleton().AttachHandler(std::make_shared<ConsoleLogger>());
+  Logger::Singleton().Start();
+
   LogEvent(Info, "Application Running...");
   //Logger::Singleton().SetLogLevel(Debug);
 

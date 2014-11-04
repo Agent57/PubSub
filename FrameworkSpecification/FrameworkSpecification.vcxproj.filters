@@ -38,9 +38,6 @@
     <ClInclude Include="MessageDefinitions\TestMessage.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Fakes\FakeBroker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Fakes\FakeConnector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UnitTestDefinitions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fakes\FakeBroker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

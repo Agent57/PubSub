@@ -64,17 +64,6 @@ namespace CoreSpecification
       Assert::IsTrue(TestMessage1 == iMsgPtrOut);
     }
 
-    TEST_METHOD(When_checking_the_timeout_on_an_empty_event_queue_the_returned_object_type_is_NoTimeout)
-    {
-      // Get the expiration time from an empty event queue
-      auto timeout = teq.Timeout();
-
-      // Lock object, used to signal a message queue event
-      std::mutex m_lock;
-      std::condition_variable m_conditional;
-      Assert::IsTrue(timeout->Wait(m_conditional, m_lock) == std::cv_status::no_timeout);
-    }
-
     TEST_METHOD(When_checking_the_timeout_on_an_expired_event_the_returned_expiration_time_is_minus_one)
     {
       // Set a repeatable event for 2147483647ms in the past

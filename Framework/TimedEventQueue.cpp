@@ -21,15 +21,15 @@ const MessagePtr TimedEventQueue::StopTimer(const int timerId)
 {
   std::lock_guard<std::mutex> lock(m_lock);
 
-  std::list<TimedEventPtr>::iterator it = m_timedEvents.begin();
-  while (it != m_timedEvents.end() && (*it)->Id() != timerId)
-    ++it;
+  TimedEventItem item = m_timedEvents.begin();
+  while (item != m_timedEvents.end() && (*item)->Id() != timerId)
+    ++item;
 
-  if (it == m_timedEvents.end())
+  if (item == m_timedEvents.end())
     return nullptr;
 
-  MessagePtr event = (*it)->Event();
-  m_timedEvents.erase(it);
+  MessagePtr event = (*item)->Event();
+  m_timedEvents.erase(item);
   return event;
 }
 

@@ -130,7 +130,11 @@ $(ProjectDir)\MessageDefinitions\ProtoBuild.bat $(ProjectDir)</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FrameworkManager.cpp" />
     <ClCompile Include="TestApp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FrameworkManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

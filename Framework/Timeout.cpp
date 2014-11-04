@@ -30,10 +30,8 @@ long long TimeoutExpired::Remaining()
 
 std::cv_status NoTimeout::Wait(std::condition_variable& conditional, std::mutex& mutex)
 {
-#ifndef UNIT_TEST
   std::unique_lock<std::mutex> lock(mutex);
   conditional.wait(lock);
-#endif
   return std::cv_status::no_timeout;
 }
 

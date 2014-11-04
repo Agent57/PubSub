@@ -118,7 +118,6 @@ $(ProjectDir)\MessageDefinitions\ProtoBuild.bat</Command>
     <ClInclude Include="Broker.h" />
     <ClInclude Include="DomainManagementHandlers.h" />
     <ClInclude Include="DomainManager.h" />
-    <ClInclude Include="FrameworkManager.h" />
     <ClInclude Include="IBroker.h" />
     <ClInclude Include="IConnectionParameters.h" />
     <ClInclude Include="IConnector.h" />
@@ -146,7 +145,6 @@ $(ProjectDir)\MessageDefinitions\ProtoBuild.bat</Command>
     <ClCompile Include="Broker.cpp" />
     <ClCompile Include="DomainManagementHandlers.cpp" />
     <ClCompile Include="DomainManager.cpp" />
-    <ClCompile Include="FrameworkManager.cpp" />
     <ClCompile Include="MessageLoop.cpp" />
     <ClCompile Include="MessageLoopRunner.cpp" />
     <ClCompile Include="ProtobufWrapper.cpp" />

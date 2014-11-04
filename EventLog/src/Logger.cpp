@@ -2,7 +2,6 @@
 
 #include "Logger.h"
 #include "IDELogger.h"
-#include "ConsoleLogger.h"
 
 #include <chrono>
 #include <iomanip>
@@ -22,26 +21,25 @@ Logger::Logger()
   m_start = std::chrono::high_resolution_clock::now();
   m_enabled =  true;
   m_max_level = Trace;
-  m_running = true;
-
-  if (IsDebuggerPresent())
-    AttachHandler(std::make_shared<IDELogger>());
-
-  AttachHandler(std::make_shared<ConsoleLogger>());
-
-#ifndef UNIT_TEST
-  m_logger = std::thread(&Logger::LogWorker, this);
-#endif // UNIT_TEST
+  m_running = false;
 
   LoggerInfo("Application logging started");
 }
 
 Logger::~Logger()
 {
+  LoggerInfo("Application logging complete");
+  std::lock_guard<std::mutex> lock(m_lock);
   Shutdown();
-  CallLogHandlers(std::make_shared<LogEventData>(Info,
-                                                 "Application logging complete",
-                                                 __FILE__, __FUNCTION__, __LINE__));
+}
+
+void Logger::Start()
+{
+  m_running = true;
+  if (IsDebuggerPresent())
+    AttachHandler(std::make_shared<IDELogger>());
+
+  m_logger = std::thread(&Logger::LogWorker, this);
 }
 
 void Logger::Shutdown()
@@ -55,10 +53,6 @@ void Logger::Shutdown()
   if (m_logger.joinable())
     m_logger.join();
 
-  // Finish processing any remaining log events
-  CallLogHandlers(std::make_shared<LogEventData>(Warning,
-                                                 "<<< Flushing log event queue before completing shutdown >>>",
-                                                 __FILE__, __FUNCTION__, __LINE__));
   ProcessLogEvents(m_queue);
 }
 
@@ -117,6 +111,7 @@ void Logger::BufferEventQueue()
     m_conditional.wait(std::unique_lock<std::mutex>(m_lock));
 
   std::lock_guard<std::mutex> lock(m_lock);
+  m_buffer->clear();
   auto temp = m_buffer;
   m_buffer = m_queue;
   m_queue = temp;
@@ -151,34 +146,4 @@ void Logger::CallLogHandlers(const LogEventDataPtr& pLog)
   {
     (*item)->HandleLogEvent(pLog);
   }
-}
-
-void ConsoleLogger::HandleLogEvent(const LogEventDataPtr& pLog)
-{
-  if (pLog == nullptr)
-    return;
-
-  // Format log message output for the console
-  std::cout << std::right << std::setfill('0') << std::setw(8) << pLog->DisplayTime()
-    << "  " << std::setw(5) << pLog->ThreadId() << std::setfill(' ')
-    << "  " << std::left << std::setw(9) << pLog->Level()
-    << pLog->Text() << std::endl;
-}
-
-void IDELogger::HandleLogEvent(const LogEventDataPtr& pLog)
-{
-  if (pLog == nullptr)
-    return;
-
-  // Format log message output for the Visual Studio Debugger
-  std::stringstream ss;
-
-  ss << pLog->File()
-     << "(" << pLog->Line() << "): "
-     << std::setfill('0') << std::setw(8) << pLog->DisplayTime()
-     << " [" << pLog->ThreadId() << "] "
-     << pLog->Level() << ": "
-     << pLog->Text() << std::endl;
-
-  OutputDebugString(ss.str().c_str());
 }

@@ -74,9 +74,6 @@
     <ClInclude Include="InternalMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FrameworkManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ITimeout.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
@@ -116,9 +113,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DomainManagementHandlers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameworkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Timeout.cpp">

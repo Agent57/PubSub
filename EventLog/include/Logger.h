@@ -61,6 +61,7 @@ private:
 
 public:
   static Logger& Singleton();
+  void Start();
   void SetLogLevel(const LogLevel level);
   const std::chrono::high_resolution_clock::time_point StartTime() const;
   bool CheckLogLevel(const LogLevel level) const;
