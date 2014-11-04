@@ -59,6 +59,8 @@ const MessagePtr TimedEventQueue::TimeoutEvent()
   return timedEvent->Event();
 }
 
+
+// Private Methods
 void TimedEventQueue::ResetIfRepeatable(const TimedEventPtr timedEvent)
 {
   if (timedEvent->Repeatable())
@@ -70,14 +72,14 @@ void TimedEventQueue::ResetIfRepeatable(const TimedEventPtr timedEvent)
 
 void TimedEventQueue::InsertTimedEvent(const TimedEventPtr timedEvent)
 {
-  std::list<TimedEventPtr>::iterator it = m_timedEvents.begin();
+  TimedEventItem it = m_timedEvents.begin();
   while (false == CheckTimeSlot(it, timedEvent))
     ++it;
 
   m_timedEvents.insert(it, timedEvent);
 }
 
-bool TimedEventQueue::CheckTimeSlot(std::list<TimedEventPtr>::iterator& it, const TimedEventPtr timedEvent)
+bool TimedEventQueue::CheckTimeSlot(TimedEventItem& it, const TimedEventPtr timedEvent)
 {
   if (it == m_timedEvents.end())
     return true;

@@ -22,6 +22,7 @@ class TimeoutWait : public ITimeout
 {
 private:
   long long m_remaining;
+
 public:
   TimeoutWait(long long value);
   std::cv_status Wait(std::condition_variable& conditional, std::mutex& lock);

@@ -14,7 +14,6 @@ QueueConnector::~QueueConnector()
 
 bool QueueConnector::Open(const ConnectionParametersPtr& connectionParameters)
 {
-  // No action necessary to open a message queue
   return true;
 }
 
@@ -60,7 +59,9 @@ const MessagePtr QueueConnector::Read()
 
 bool QueueConnector::CheckForMessage()
 {
- return (!m_queue.empty() || m_timer.Timeout()->Wait(m_conditional, m_lock) != std::cv_status::timeout);
+  return m_queue.empty()
+    ? m_timer.Timeout()->Wait(m_conditional, m_lock) != std::cv_status::timeout
+    : true;
 }
 
 const MessagePtr QueueConnector::FirstQueuedMessage()
