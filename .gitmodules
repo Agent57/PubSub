@@ -1,0 +1,3 @@
+[submodule "Thirdparty"]
+	path = Thirdparty
+	url = https://github.com/Agent57/Thirdparty
