@@ -22,10 +22,12 @@ private:
 
   bool PublishToSubscribers(const MessagePtr& msg);
   bool NewSubscriptionType(const std::string& type);
+  void Broker::RemoveSubscription(const std::string& type, const ConnectorPtr& connector);
 
 public:
   void Subscribe(const std::string& type, const ConnectorPtr& connector);
   void Unsubscribe(const std::string& type, const ConnectorPtr& connector);
+  void Unsubscribe(const std::set<std::string>& type, const ConnectorPtr& connector);
   bool Send(const MessagePtr& msg);
 };
 

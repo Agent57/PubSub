@@ -132,8 +132,10 @@ $(ProjectDir)\MessageDefinitions\ProtoBuild.bat</Command>
     <ClInclude Include="ISocketProtocolBinder.h" />
     <ClInclude Include="ITimedEvent.h" />
     <ClInclude Include="ITimeout.h" />
+    <ClInclude Include="MessageHandlerRegister.h" />
     <ClInclude Include="MessageLoop.h" />
     <ClInclude Include="MessageLoopRunner.h" />
+    <ClInclude Include="ProtoMessage.h" />
     <ClInclude Include="ProtobufWrapper.h" />
     <ClInclude Include="QueueConnector.h" />
     <ClInclude Include="TcpConnectionParameters.h" />
@@ -145,8 +147,10 @@ $(ProjectDir)\MessageDefinitions\ProtoBuild.bat</Command>
     <ClCompile Include="Broker.cpp" />
     <ClCompile Include="DomainManagementHandlers.cpp" />
     <ClCompile Include="DomainManager.cpp" />
+    <ClCompile Include="MessageHandlerRegister.cpp" />
     <ClCompile Include="MessageLoop.cpp" />
     <ClCompile Include="MessageLoopRunner.cpp" />
+    <ClCompile Include="ProtoMessage.cpp" />
     <ClCompile Include="ProtobufWrapper.cpp" />
     <ClCompile Include="QueueConnector.cpp" />
     <ClCompile Include="TcpConnector.cpp" />

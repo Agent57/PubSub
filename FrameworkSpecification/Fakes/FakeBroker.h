@@ -45,6 +45,13 @@ namespace FrameworkSpecification
       UnsubscribeCalled++;
     }
 
+    void Unsubscribe(const std::set<std::string>& type, const ConnectorPtr& connector)
+    {
+      //SavedType = type;
+      SavedConnector = connector;
+      UnsubscribeCalled++;
+    }
+
     bool Send(const MessagePtr& msg)
     {
       SendCalled++;

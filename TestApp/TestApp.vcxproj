@@ -100,7 +100,7 @@ $(ProjectDir)\MessageDefinitions\ProtoBuild.bat $(ProjectDir)</Command>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Thirdparty\protobuf\lib\Debug;..\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Thirdparty\protobuf\lib\Debug;..\UnitTest;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>EventLog.lib;Framework.lib;libprotobuf.lib;CommonMessages.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>false</Profile>
     </Link>

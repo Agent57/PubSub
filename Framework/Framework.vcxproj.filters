@@ -89,6 +89,12 @@
     <ClInclude Include="MessageLoopRunner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MessageHandlerRegister.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProtoMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TimedEventQueue.cpp">
@@ -122,6 +128,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MessageLoopRunner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerRegister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProtoMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

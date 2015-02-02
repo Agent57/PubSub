@@ -13,6 +13,7 @@ private:
   ConnectorPtr m_inQueue;
   MessageLoopRunnerPtr m_messageLoopRunner;
   MessageLoopPtr m_messageLoop;
+  MessageHandlerRegisterPtr m_handlers;
 
   DomainManager();
   DomainManager(DomainManager const& copy);

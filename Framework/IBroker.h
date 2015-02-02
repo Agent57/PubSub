@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <set>
 
 #include "IConnector.h"
 #include "ITimedEvent.h"
@@ -11,6 +12,7 @@ class IBroker
 public:
   virtual void Subscribe(const std::string& type, const ConnectorPtr& connector) = 0;
   virtual void Unsubscribe(const std::string& type, const ConnectorPtr& connector) = 0;
+  virtual void Unsubscribe(const std::set<std::string>& type, const ConnectorPtr& connector) = 0;
   virtual bool Send(const MessagePtr& msg) = 0;
 };
 

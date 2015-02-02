@@ -13,8 +13,21 @@ void Broker::Subscribe(const std::string& type, const ConnectorPtr& connector)
 void Broker::Unsubscribe(const std::string& type, const ConnectorPtr& connector)
 {
   std::lock_guard<std::mutex> lock(m_lock);
+  RemoveSubscription(type, connector);
+}
+
+void Broker::RemoveSubscription(const std::string& type, const ConnectorPtr& connector)
+{
   if (m_subscriptions.count(type) > 0)
     m_subscriptions[type]->erase(connector);
+}
+
+void Broker::Unsubscribe(const std::set<std::string>& types, const ConnectorPtr& connector)
+{
+  std::lock_guard<std::mutex> lock(m_lock);
+
+  for (auto type = types.begin(); type != types.end(); ++type)
+    RemoveSubscription(*type, connector);
 }
 
 bool Broker::Send(const MessagePtr& msg)
