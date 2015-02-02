@@ -6,3 +6,5 @@ UnitTest/
 */UnitTest/
 *.user
 *.opensdf
+/*.sdf
+/*.suo
