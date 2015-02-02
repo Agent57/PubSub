@@ -1,12 +1,12 @@
 #include "ProtoMessage.h"
 
 // Framework code
-void MessageReceiver::AddVisitor(std::string type, const MessageVisitorPtr& visitor)
+void MessageBroker::Subscribe(std::string type, const MessageVisitorPtr& visitor)
 {
   m_visitors[type] = visitor;
 }
 
-void MessageReceiver::ProcessMessage(const ProtoMessagePtr& message)
+void MessageBroker::Publish(const ProtoMessagePtr& message)
 {
   auto visitor = m_visitors[message->GetTypeName()];
   message->Accept(visitor);

@@ -21,13 +21,13 @@ public:
 };
 typedef std::shared_ptr<ProtoMessage> ProtoMessagePtr;
 
-class MessageReceiver
+class MessageBroker
 {
   std::map<std::string, MessageVisitorPtr> m_visitors;
 
 public:
-  void AddVisitor(std::string type, const MessageVisitorPtr& visitor);
-  void ProcessMessage(const ProtoMessagePtr& message);
+  void Subscribe(std::string type, const MessageVisitorPtr& visitor);
+  void Publish(const ProtoMessagePtr& message);
 };
 
 // Boilerplate message wrapper

@@ -11,6 +11,7 @@
 #include "StringParameter.pb.h"
 #include "wrapper.pb.h"
 #include "ProtobufWrapper.h"
+#include "ProtoMessage.h"
 
 #include "FrameworkManager.h"
 #include "Broker.h"
@@ -28,6 +29,20 @@ int main(int argc, char** argv)
 
   LogEvent(Info, "Application Running...");
   //Logger::Singleton().SetLogLevel(Debug);
+
+  // Set up the handler for a RemoteSubscription message
+  MessageBroker broker;
+  auto  visitor = std::make_shared<RemoteSubscriptionVisitor>();
+  broker.Subscribe(Exchange::RemoteSubscription::descriptor()->full_name(), visitor);
+
+  // Create a message
+  Exchange::RemoteSubscription msg;
+  msg.set_subscriptionid(123);
+  auto proto = std::make_shared<RemoteSubscriptionMessage>(msg);
+
+  // Do something with the message
+  broker.Publish(proto);
+
 
   // Initialise the application framework
   auto SystemBroker = std::make_shared<Broker>();
