@@ -1,8 +1,6 @@
 #include "Logger.h"
 #include "TcpConnector.h"
 
-#include "wrapper.pb.h"
-
 TcpConnector::TcpConnector()
 {
   m_connected = false;
@@ -30,18 +28,23 @@ TcpConnector::TcpConnector()
 
 TcpConnector::~TcpConnector()
 {
-  Shutdown();
+  // Perform clean closedown if we have an established socket connection
+  if (m_connected && !m_socketError)
+    shutdown(m_socket, SD_SEND);
+
+  // Close the socket
+  closesocket(m_socket);
+  m_connected = false;
+
   WSACleanup();
 }
 
 void TcpConnector::OpenServer()
 {
-  return;
 }
 
 void TcpConnector::OpenClient()
 {
-  return;
 }
 
 bool TcpConnector::Open(const ConnectionParametersPtr& connectionParameters)
@@ -64,17 +67,6 @@ bool TcpConnector::Open(const ConnectionParametersPtr& connectionParameters)
   }
 
   return true;
-}
-
-void TcpConnector::Shutdown()
-{
-  // Perform clean closedown if we have an established socket connection
-  if (m_connected && !m_socketError)
-    shutdown(m_socket, SD_SEND);
-
-  // Close the socket
-  closesocket(m_socket);
-  m_connected = false;
 }
 
 bool TcpConnector::Send(const MessagePtr& msg)
@@ -108,7 +100,7 @@ bool TcpConnector::Send(const MessagePtr& msg)
   return true;
 }
 
-const MessagePtr TcpConnector::Read()
+MessagePtr TcpConnector::Read()
 {
   // Initialise the message to be null
   MessagePtr pMsg = nullptr;
@@ -126,5 +118,5 @@ const MessagePtr TcpConnector::Read()
 
 const char* TcpConnector::Receive()
 {
-  return NULL;
+  return nullptr;
 }

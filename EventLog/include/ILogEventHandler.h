@@ -7,6 +7,7 @@
 class ILogEventHandler
 {
 public:
+  virtual ~ILogEventHandler() {}
   virtual void HandleLogEvent(const LogEventDataPtr& pLog) = 0;
 };
 

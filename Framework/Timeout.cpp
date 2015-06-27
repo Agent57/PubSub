@@ -40,7 +40,7 @@ long long NoTimeout::Remaining()
   return 0;
 }
 
-const TimeoutPtr TimeoutFactory::CreateTimeout(long long timeout)
+TimeoutPtr TimeoutFactory::CreateTimeout(long long timeout)
 {
   if (timeout > 0)
     return std::make_shared<TimeoutWait>(timeout);

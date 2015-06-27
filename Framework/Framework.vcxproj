@@ -64,7 +64,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\EventLog\include;..\CommonMessages\MessageDefinitions;..\Thirdparty\protobuf\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\EventLog\include;..\CommonMessages\MessageDefinitions;..\..\Thirdparty\protobuf\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>

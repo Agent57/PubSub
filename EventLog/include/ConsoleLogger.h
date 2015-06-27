@@ -5,5 +5,7 @@
 class ConsoleLogger : public ILogEventHandler
 {
 public:
-  void HandleLogEvent(const LogEventDataPtr& pLog);
+  ~ConsoleLogger() override;
+public:
+  void HandleLogEvent(const LogEventDataPtr& pLog) override;
 };

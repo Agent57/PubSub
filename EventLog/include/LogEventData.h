@@ -18,34 +18,27 @@ enum LogLevel
 
 class LogEventData
 {
-private:
   const static std::string _levels[];
-  long long m_time;
-  LogLevel m_level;
-  std::thread::id m_thread;
-  std::string m_text;
-  std::string m_file;
-  std::string m_function;
-  int m_line;
 
-private:
-  LogEventData();
+  LogEventData() {}
 
 public:
-  static const std::string& Level(LogLevel level);
+  std::string Severity;
+  std::thread::id ThreadId;
+  std::string DisplayTime;
+  std::string Text;
+  std::string File;
+  std::string Function;
+  int Line;
+
   LogEventData(LogLevel level,
+                const std::string& time,
                 const std::string& text,
                 const std::string& file,
                 const std::string& function,
                 const int line);
-  const long long Time() const;
-  const std::string DisplayTime() const;
-  const std::string& Level() const;
-  const std::thread::id& ThreadId() const;
-  const std::string& Text() const;
-  const std::string& File() const;
-  const std::string& Function() const;
-  const int Line() const;
+
+  static std::string Level(LogLevel level);
 };
 
 typedef std::shared_ptr<LogEventData> LogEventDataPtr;

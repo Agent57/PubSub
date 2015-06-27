@@ -1,8 +1,5 @@
 #include "CppUnitTest.h"
 
-#include "TcpConnector.h"
-#include "ProtobufWrapper.h"
-
 #include "MessageDefinitions\TestMessage.pb.h"
 
 #include <memory>

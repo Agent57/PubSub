@@ -1,14 +1,11 @@
 #include "TimedEventQueue.h"
-#include "Logger.h"
-
-#include <chrono>
 
 TimedEventQueue::TimedEventQueue()
 {
   m_timerId = 0;
 }
 
-const TimedEventPtr TimedEventQueue::SetTimer(const int ms, const MessagePtr& msg, bool repeatable)
+TimedEventPtr TimedEventQueue::SetTimer(const int ms, const MessagePtr& msg, bool repeatable)
 {
   TimedEventPtr timer = std::make_shared<TimedEvent>(ms, m_timerId++, msg, repeatable);
 
@@ -17,11 +14,11 @@ const TimedEventPtr TimedEventQueue::SetTimer(const int ms, const MessagePtr& ms
   return timer;
 }
 
-const MessagePtr TimedEventQueue::StopTimer(const int timerId)
+MessagePtr TimedEventQueue::StopTimer(const int timerId)
 {
   std::lock_guard<std::mutex> lock(m_lock);
 
-  TimedEventItem item = m_timedEvents.begin();
+  auto item = m_timedEvents.begin();
   while (item != m_timedEvents.end() && (*item)->Id() != timerId)
     ++item;
 
@@ -33,32 +30,36 @@ const MessagePtr TimedEventQueue::StopTimer(const int timerId)
   return event;
 }
 
-const TimeoutPtr TimedEventQueue::Timeout()
+TimeoutPtr TimedEventQueue::Timeout()
 {
   std::lock_guard<std::mutex> lock(m_lock);
 
   if (m_timedEvents.empty())
     return TimeoutFactory::CreateTimeout(0);
 
-  TimedEventPtr timer = m_timedEvents.front();
+  auto timer = m_timedEvents.front();
 
   return timer->Timeout();
 }
 
-const MessagePtr TimedEventQueue::TimeoutEvent()
+MessagePtr TimedEventQueue::TimeoutEvent()
 {
   std::lock_guard<std::mutex> lock(m_lock);
 
   if (m_timedEvents.empty())
     return nullptr;
 
-  TimedEventPtr timedEvent = m_timedEvents.front();
+  auto timedEvent = m_timedEvents.front();
   m_timedEvents.pop_front();
   ResetIfRepeatable(timedEvent);
 
   return timedEvent->Event();
 }
 
+MessagePtr TimedEventQueue::FindTimerById(const int timerId)
+{
+  return {};
+}
 
 // Private Methods
 void TimedEventQueue::ResetIfRepeatable(const TimedEventPtr timedEvent)
@@ -72,7 +73,7 @@ void TimedEventQueue::ResetIfRepeatable(const TimedEventPtr timedEvent)
 
 void TimedEventQueue::InsertTimedEvent(const TimedEventPtr timedEvent)
 {
-  TimedEventItem it = m_timedEvents.begin();
+  auto it = m_timedEvents.begin();
   while (false == CheckTimeSlot(it, timedEvent))
     ++it;
 

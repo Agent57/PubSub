@@ -3,7 +3,6 @@
 #include "ProtobufWrapper.h"
 
 #include "MessageDefinitions\TestMessage.pb.h"
-#include "wrapper.pb.h"
 
 #include <memory>
 

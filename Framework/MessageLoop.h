@@ -16,8 +16,8 @@ private:
 
 public:
   MessageLoop(const ConnectorPtr& connector, MessageHandlerRegisterPtr handlers);
-  virtual bool ProcessMessageLoop();
   virtual ~MessageLoop();
-  virtual void Execute();
-  virtual void Shutdown();
+  virtual bool ProcessMessageLoop() override;
+  virtual void Execute() override;
+  virtual void Shutdown() override;
 };

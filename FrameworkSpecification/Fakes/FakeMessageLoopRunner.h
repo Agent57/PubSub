@@ -1,13 +1,10 @@
 #pragma once
 
-#include "IDomainManager.h"
-#include "IHandler.h"
-
-#include "MessageLoopRunner.h"
+#include "IMessageLoopRunner.h"
 
 namespace FrameworkSpecification
 {
-  class FakeMessageLoopRunner : public MessageLoopRunner
+  class FakeMessageLoopRunner : public IMessageLoopRunner
   {
   public:
     int RunMessageLoopCalled;
@@ -21,15 +18,10 @@ namespace FrameworkSpecification
       SavedMessageLoop = nullptr;
     }
 
-    void RunMessageLoop(const MessageLoopPtr& messageLoop)
+    void RunMessageLoop(const MessageLoopPtr& messageLoop) override
     {
       RunMessageLoopCalled++;
       SavedMessageLoop = messageLoop;
-    }
-
-    void StopMessageLoop()
-    {
-      StopMessageLoopCalled++;
     }
   };
 

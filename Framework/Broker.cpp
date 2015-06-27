@@ -1,5 +1,4 @@
 #include "Broker.h"
-#include "Logger.h"
 
 void Broker::Subscribe(const std::string& type, const ConnectorPtr& connector)
 {

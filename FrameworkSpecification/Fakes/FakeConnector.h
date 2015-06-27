@@ -40,38 +40,38 @@ namespace FrameworkSpecification
       SavedMessage = nullptr;
     }
 
-    virtual bool Open(const ConnectionParametersPtr& connectionParameters)
+    virtual bool Open(const ConnectionParametersPtr& connectionParameters) override
     {
       OpenCalled++;
       return OpenExpectedResult;
     }
 
-    virtual void Shutdown(void)
+    virtual void Shutdown(void) override
     {
       ShutdownCalled++;
     }
 
-    virtual bool Send(const MessagePtr& msg)
+    virtual bool Send(const MessagePtr& msg) override
     {
       SendCalled++;
       SavedMessage = msg;
       return SendExpectedResult;
     }
 
-    virtual const MessagePtr Read(void)
+    virtual MessagePtr Read(void) override
     {
       ReadCalled++;
       return ReadExpectedResult;
     }
     
-    virtual const TimedEventPtr SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable = false)
+    virtual TimedEventPtr SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable = false) override
     {
       SetTimerCalled++;
       SavedMessage = msg;
       return SetTimerExpectedResult;
     }
     
-    virtual const MessagePtr StopTimer(const int timerId)
+    virtual MessagePtr StopTimer(const int timerId) override
     {
       StopTimerCalled++;
       return StopTimerExpectedResult;

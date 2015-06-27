@@ -31,28 +31,28 @@ namespace FrameworkSpecification
       SavedMessage = nullptr;
     }
 
-    void Subscribe(const std::string& type, const ConnectorPtr& connector)
+    void Subscribe(const std::string& type, const ConnectorPtr& connector) override
     {
       SavedType = type;
       SavedConnector = connector;
       SubscribeCalled++;
     }
 
-    void Unsubscribe(const std::string& type, const ConnectorPtr& connector)
+    void Unsubscribe(const std::string& type, const ConnectorPtr& connector) override
     {
       SavedType = type;
       SavedConnector = connector;
       UnsubscribeCalled++;
     }
 
-    void Unsubscribe(const std::set<std::string>& type, const ConnectorPtr& connector)
+    void Unsubscribe(const std::set<std::string>& type, const ConnectorPtr& connector) override
     {
       //SavedType = type;
       SavedConnector = connector;
       UnsubscribeCalled++;
     }
 
-    bool Send(const MessagePtr& msg)
+    bool Send(const MessagePtr& msg) override
     {
       SendCalled++;
       SavedMessage = msg;

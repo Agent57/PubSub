@@ -1,6 +1,5 @@
 #pragma once
-
-#include "TimedEvent.h"
+#include <ITimedEvent.h>
 
 namespace FrameworkSpecification
 {
@@ -26,32 +25,32 @@ namespace FrameworkSpecification
       DurationExpectedResult = 0L;
     }
 
-    virtual TimeoutPtr Timeout() const
+    virtual TimeoutPtr Timeout() const override
     {
       return TimeoutExpectedResult;
     }
 
-    virtual const int Id() const
+    virtual int Id() const override
     {
       return IdExpectedResult;
     }
 
-    virtual const MessagePtr Event() const
+    virtual MessagePtr Event() const override
     {
       return EventExpectedResult;
     }
 
-    virtual bool Repeatable() const
+    virtual bool Repeatable() const override
     {
       return RepeatableExpectedResult;
     }
 
-    virtual const long long Duration() const
+    virtual long long Duration() const override
     {
       return DurationExpectedResult;
     }
 
-    virtual void ExtendTimeout(const long long duration)
+    virtual void ExtendTimeout(long long duration) override
     {
       ExtendTimeoutCalled++;
     }

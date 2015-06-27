@@ -1,7 +1,5 @@
 #pragma once
 
-#include <winsock2.h>
-
 #include "domainmanager.h"
 
 class FrameworkManager :
@@ -13,7 +11,7 @@ public:
 
   virtual ~FrameworkManager ();
 
-  bool Initialise();
+  bool Initialise() override;
 };
 
 class FrameworkManagerY :
@@ -25,7 +23,7 @@ public:
 
   virtual ~FrameworkManagerY ();
 
-  bool Initialise();
+  bool Initialise() override;
 };
 
 typedef std::shared_ptr<FrameworkManagerY> FrameworkManagerYPtr;

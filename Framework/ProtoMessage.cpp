@@ -23,5 +23,5 @@ void RemoteSubscriptionMessage::Accept(MessageVisitorPtr visitor) const
 // Message handler
 void RemoteSubscriptionVisitor::Visit(const Exchange::RemoteSubscription &message)
 {
-  auto value = message.subscriptionid();
+  //auto value = message.subscriptionid();
 }

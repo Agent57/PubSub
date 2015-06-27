@@ -27,7 +27,7 @@ void MessageHandlerRegister::DeregisterHandler(const ::google::protobuf::Descrip
   m_types.erase(type->full_name());
 }
 
-const HandlerPtr MessageHandlerRegister::GetHandlerForMessage(std::string type)
+HandlerPtr MessageHandlerRegister::GetHandlerForMessage(std::string type)
 {
   if (m_handlers->find(type) == m_handlers->end())
   {

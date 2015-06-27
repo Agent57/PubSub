@@ -2,7 +2,6 @@
 #pragma once
 
 #include <WinSock2.h>
-#include <Windows.h>
 
 #include <memory>
 #include <atomic>
@@ -34,18 +33,18 @@ public:
   TcpConnector(void);
   ~TcpConnector(void);
 
-  bool Open(const ConnectionParametersPtr& connectionParameters);
+  bool Open(const ConnectionParametersPtr& connectionParameters) override;
   void OpenServer();
   void OpenClient();
-  void Shutdown();
-  bool Send(const MessagePtr& msg);
-  const MessagePtr Read();
+  bool Send(const MessagePtr& msg) override;
+  MessagePtr Read() override;
   const char* TcpConnector::Receive();
-  const TimedEventPtr SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable = false)
+  TimedEventPtr SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable = false) override
   {
     return nullptr;
   }
-  const MessagePtr StopTimer(const int timerId) { return nullptr; }
+  MessagePtr StopTimer(const int timerId) override
+  { return nullptr; }
 };
 
 

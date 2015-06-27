@@ -1,7 +1,6 @@
 #pragma warning (disable:4251)
 #pragma once
 
-#include <memory>
 #include <atomic>
 #include <condition_variable>
 #include <mutex>
@@ -14,7 +13,6 @@
 class QueueConnector :
   public IConnector
 {
-private:
   std::queue<MessagePtr> m_queue;
   std::mutex m_lock;
   std::condition_variable m_conditional;
@@ -25,13 +23,13 @@ public:
   QueueConnector(void);
   ~QueueConnector(void);
 
-  bool Open(const ConnectionParametersPtr& connectionParameters);
-  void Shutdown();
-  bool Send(const MessagePtr& msg);
-  const MessagePtr Read();
-  const TimedEventPtr SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable = false);
-  const MessagePtr StopTimer(const int timerId);
-  const MessagePtr FirstQueuedMessage();
+  bool Open(const ConnectionParametersPtr& connectionParameters) override;
+  void Shutdown() override;
+  bool Send(const MessagePtr& msg) override;
+  MessagePtr Read() override;
+  TimedEventPtr SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable = false) override;
+  MessagePtr StopTimer(const int timerId) override;
+  MessagePtr FirstQueuedMessage();
 
 private:
   bool CheckForMessage();

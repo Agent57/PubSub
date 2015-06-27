@@ -71,10 +71,10 @@ namespace FrameworkSpecification
       
       broker->SendExpectedResult = true;
 
-      TestMessagePtr testMessage = std::make_shared<Exchange::TestMessage>();
+      auto testMessage = std::make_shared<Exchange::TestMessage>();
       Assert::IsTrue(domain->Send(testMessage));
 
-      TestMessagePtr result = std::dynamic_pointer_cast<Exchange::TestMessage>(broker->SavedMessage);
+      auto result = std::dynamic_pointer_cast<Exchange::TestMessage>(broker->SavedMessage);
       Assert::AreEqual(CalledOnce, broker->SendCalled);
       Assert::IsTrue(testMessage == result);
     }
@@ -83,10 +83,10 @@ namespace FrameworkSpecification
     {
       SetupSimpleDomain();
 
-      FakeTimedEventPtr expected = std::make_shared<FakeTimedEvent>();
+      auto expected = std::make_shared<FakeTimedEvent>();
       connection->SetTimerExpectedResult = expected;
 
-      TimedEventPtr result = domain->SetTimer(0, nullptr);
+      auto result = domain->SetTimer(0, nullptr);
 
       Assert::IsTrue(expected == result);
       Assert::AreEqual(CalledOnce, connection->SetTimerCalled);
@@ -96,10 +96,10 @@ namespace FrameworkSpecification
     {
       SetupSimpleDomain();
 
-      TestMessagePtr expected = std::make_shared<Exchange::TestMessage>();
+      auto expected = std::make_shared<Exchange::TestMessage>();
       connection->StopTimerExpectedResult = expected;
 
-      MessagePtr result = domain->StopTimer(0);
+      auto result = domain->StopTimer(0);
 
       Assert::IsTrue(result == expected);
       Assert::AreEqual(CalledOnce, connection->StopTimerCalled);
@@ -111,7 +111,7 @@ namespace FrameworkSpecification
       connection->ReadExpectedResult = std::make_shared<Exchange::TestMessage>();
       handler->ProcessExpectedResult = true;
 
-      bool result = MessageLoopRunner->SavedMessageLoop->ProcessMessageLoop();
+      auto result = MessageLoopRunner->SavedMessageLoop->ProcessMessageLoop();
 
       Assert::AreEqual(true, result);
       Assert::AreEqual(CalledOnce, connection->ReadCalled);
@@ -124,7 +124,7 @@ namespace FrameworkSpecification
       SetupSimpleDomain();
       connection->ReadExpectedResult = std::make_shared<Exchange::TestMessage>();
 
-      bool result = MessageLoopRunner->SavedMessageLoop->ProcessMessageLoop();
+      auto result = MessageLoopRunner->SavedMessageLoop->ProcessMessageLoop();
 
       Assert::AreEqual(false, result);
       Assert::AreEqual(CalledOnce, connection->ReadCalled);
@@ -135,7 +135,7 @@ namespace FrameworkSpecification
       SetupSimpleDomain();
       connection->ReadExpectedResult = nullptr;
 
-      bool result = MessageLoopRunner->SavedMessageLoop->ProcessMessageLoop();
+      auto result = MessageLoopRunner->SavedMessageLoop->ProcessMessageLoop();
 
       Assert::AreEqual(false, result);
       Assert::AreEqual(CalledOnce, connection->ReadCalled);

@@ -10,8 +10,8 @@ class Iserialiser
 {
 public:
   virtual ~Iserialiser(void) {};
-  virtual const DataBufferPtr Serialise(const MessagePtr& msg) = 0;
-  virtual const ProtobufMessagePtr Deserialise(const DataBufferPtr& buffer) = 0;
+  virtual DataBufferPtr Serialise(const MessagePtr& msg) = 0;
+  virtual ProtobufMessagePtr Deserialise(const DataBufferPtr& buffer) = 0;
 };
 
 typedef std::shared_ptr<Iserialiser> SerialiserPtr;

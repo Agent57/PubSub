@@ -5,5 +5,6 @@
 class IDELogger : public ILogEventHandler
 {
 public:
-  void HandleLogEvent(const LogEventDataPtr& pLog);
+  ~IDELogger() override;
+  void HandleLogEvent(const LogEventDataPtr& pLog) override;
 };

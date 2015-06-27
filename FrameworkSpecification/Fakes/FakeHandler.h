@@ -16,7 +16,7 @@ namespace FrameworkSpecification
     std::weak_ptr<IDomainManager> SavedDomainManager;
     std::shared_ptr<Exchange::TestMessage const> SavedMessage;
 
-    FakeHandler(const DomainManagerPtr& domain)
+    explicit FakeHandler(const DomainManagerPtr& domain)
     {
       ProcessCalled = 0;
       ProcessExpectedResult = false;
@@ -25,7 +25,7 @@ namespace FrameworkSpecification
       SavedMessage = nullptr;
     }
 
-    bool Process(const  std::shared_ptr<Exchange::TestMessage const>& pMsg)
+    bool Process(const  std::shared_ptr<Exchange::TestMessage const>& pMsg) override
     {
       ProcessCalled++;
       SavedMessage = pMsg;

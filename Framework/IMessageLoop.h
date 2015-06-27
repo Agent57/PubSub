@@ -1,7 +1,6 @@
 #pragma once
 
-#include "IHandler.h"
-#include "IMessage.h"
+#include <memory>
 
 
 class IMessageLoop

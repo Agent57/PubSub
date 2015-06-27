@@ -5,7 +5,6 @@
 
 #include <chrono>
 #include <iomanip>
-#include <memory>
 
 
 Logger& Logger::Singleton()
@@ -65,7 +64,7 @@ void Logger::SetLogLevel(LogLevel level)
   LoggerInfo("Log output level set to " << LogEventData::Level(level));
 }
 
-const std::chrono::high_resolution_clock::time_point Logger::StartTime() const
+std::chrono::high_resolution_clock::time_point Logger::StartTime() const
 {
   return m_start;
 }
@@ -105,10 +104,36 @@ void Logger::LogWorker()
   }
 }
 
+std::string Logger::RunTime()
+{
+  // Convert the internal log time value into regular clock time
+  auto now = std::chrono::high_resolution_clock::now();
+  auto start = Logger::Singleton().StartTime();
+  auto runtime = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+  int milliseconds = runtime % 1000;
+  auto x = runtime / 1000;
+  int seconds = x % 60;
+  int minutes = x / 60 % 60;
+  int hours = x / 3600 % 24;
+  auto days = x / 86400;
+
+  // Output the time in an easily readable format
+  std::stringstream ss;
+  ss << std::setfill('0') << std::setw(3) << days << ":"
+    << std::setw(2) << hours << ":"
+    << std::setw(2) << minutes << ":"
+    << std::setw(2) << seconds << ":"
+    << std::setw(3) << milliseconds;
+  return ss.str();
+}
+
 void Logger::BufferEventQueue()
 {
   if (m_queue->empty())
-    m_conditional.wait(std::unique_lock<std::mutex>(m_lock));
+  {
+    auto waitlock = std::unique_lock<std::mutex>(m_lock);
+    m_conditional.wait(waitlock);
+  }
 
   std::lock_guard<std::mutex> lock(m_lock);
   m_buffer->clear();

@@ -1,8 +1,4 @@
 #include "DomainManager.h"
-#include "DomainManagementHandlers.h"
-#include "Logger.h"
-
-#include <typeinfo>
 
 // Constructor
 DomainManager::DomainManager(const BrokerPtr& broker, const ConnectorPtr& connector, const MessageLoopRunnerPtr& messageLoopRunner)
@@ -18,8 +14,6 @@ DomainManager::DomainManager(const BrokerPtr& broker, const ConnectorPtr& connec
 // Destructor
 DomainManager::~DomainManager()
 {
-  m_messageLoopRunner->StopMessageLoop();
-
   m_broker->Unsubscribe(m_handlers->GetHandlerTypes(), m_inQueue);
 }
 
@@ -48,12 +42,12 @@ bool DomainManager::Send(const MessagePtr& msg)
   return m_broker->Send(msg);
 }
 
-const TimedEventPtr DomainManager::SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable)
+TimedEventPtr DomainManager::SetTimer(int milliseconds, const MessagePtr& msg, bool repeatable)
 {
   return m_inQueue->SetTimer(milliseconds, msg, repeatable);
 }
 
-const MessagePtr DomainManager::StopTimer(const int TimerId)
+MessagePtr DomainManager::StopTimer(int TimerId)
 {
   return m_inQueue->StopTimer(TimerId);
 }

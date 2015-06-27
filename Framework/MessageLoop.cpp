@@ -31,7 +31,7 @@ void MessageLoop::Shutdown()
 
 bool MessageLoop::ProcessMessageLoop()
 {
-  const MessagePtr pMsg = m_inQueue->Read();
+  auto pMsg = m_inQueue->Read();
 
   return pMsg ? CallHandlerForMessage(pMsg) : false;
 }
@@ -40,6 +40,6 @@ bool MessageLoop::CallHandlerForMessage(const MessagePtr& pMsg)
 {
   LogEvent(Trace, "Calling handler for " << pMsg->GetTypeName());
 
-  HandlerPtr handler = m_handlers->GetHandlerForMessage(pMsg->GetTypeName());
+  auto handler = m_handlers->GetHandlerForMessage(pMsg->GetTypeName());
   return pMsg->CallHandler(handler);
 }

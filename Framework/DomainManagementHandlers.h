@@ -11,14 +11,13 @@
 class StringParameterHandler
   : public MessageHandler<Exchange::StringParameter>
 {
-private:
   const std::weak_ptr<IDomainManager> m_domain;
 
 public:
   StringParameterHandler(const DomainManagerPtr& domain)
     : m_domain(domain) {}
 
-  bool Process(const  std::shared_ptr<Exchange::StringParameter const>& pMsg);
+  bool Process(const  std::shared_ptr<Exchange::StringParameter const>& pMsg) override;
 };
 
 
@@ -27,13 +26,12 @@ class DomainManagementHandlers
   : public MessageHandler<Exchange::RemoteSubscription>,
   public MessageHandler<Exchange::Wrapper>
 {
-private:
   const std::weak_ptr<IDomainManager> m_domain;
 
 public:
   DomainManagementHandlers(const DomainManagerPtr& domain)
     : m_domain(domain) {}
 
-  bool Process(const  std::shared_ptr<Exchange::RemoteSubscription const>& pMsg);
-  bool Process(const  std::shared_ptr<Exchange::Wrapper const>& pMsg);
+  bool Process(const  std::shared_ptr<Exchange::RemoteSubscription const>& pMsg) override;
+  bool Process(const  std::shared_ptr<Exchange::Wrapper const>& pMsg) override;
 };

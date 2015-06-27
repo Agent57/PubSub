@@ -4,13 +4,9 @@
 #include "logger.h"
 
 #include <google/protobuf/descriptor.h>
-#include <google/protobuf/io/coded_stream.h>
-#include "google/protobuf/io/zero_copy_stream_impl.h"
 
 #include "RemoteSubscription.pb.h"
 #include "StringParameter.pb.h"
-#include "wrapper.pb.h"
-#include "ProtobufWrapper.h"
 #include "ProtoMessage.h"
 
 #include "FrameworkManager.h"
@@ -19,7 +15,6 @@
 #include "ConsoleLogger.h"
 
 #include <iostream>
-#include <thread>
 
 
 int main(int argc, char** argv)

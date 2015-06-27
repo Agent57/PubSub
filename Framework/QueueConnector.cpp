@@ -9,7 +9,6 @@ QueueConnector::QueueConnector()
 
 QueueConnector::~QueueConnector()
 {
-  Shutdown();
 }
 
 bool QueueConnector::Open(const ConnectionParametersPtr& connectionParameters)
@@ -17,17 +16,17 @@ bool QueueConnector::Open(const ConnectionParametersPtr& connectionParameters)
   return true;
 }
 
-const TimedEventPtr QueueConnector::SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable)
+TimedEventPtr QueueConnector::SetTimer(const int milliseconds, const MessagePtr& msg, bool repeatable)
 {
-  TimedEventPtr timer = m_timer.SetTimer(milliseconds, msg, repeatable);
+  auto timer = m_timer.SetTimer(milliseconds, msg, repeatable);
   m_conditional.notify_all();
 
   return timer;
 }
 
-const MessagePtr QueueConnector::StopTimer(const int timerId)
+MessagePtr QueueConnector::StopTimer(const int timerId)
 {
-  MessagePtr pMsg = m_timer.StopTimer(timerId);
+  auto pMsg = m_timer.StopTimer(timerId);
   m_conditional.notify_all();
 
   return pMsg;
@@ -48,7 +47,7 @@ bool QueueConnector::Send(const MessagePtr& msg)
   return true;
 }
 
-const MessagePtr QueueConnector::Read()
+MessagePtr QueueConnector::Read()
 {
   if(CheckForMessage())
     return FirstQueuedMessage();
@@ -64,13 +63,13 @@ bool QueueConnector::CheckForMessage()
     : true;
 }
 
-const MessagePtr QueueConnector::FirstQueuedMessage()
+MessagePtr QueueConnector::FirstQueuedMessage()
 {
   if(m_queue.empty())
     return nullptr;
 
   std::lock_guard<std::mutex> lock(m_lock);
-  MessagePtr pMsg = m_queue.front();
+  auto pMsg = m_queue.front();
   m_queue.pop();
   LogEvent(Trace, pMsg->GetTypeName() << " message received");
   return pMsg;

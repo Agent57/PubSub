@@ -5,7 +5,7 @@
 
 #include <google/protobuf/descriptor.h>
 
-const DataBufferPtr ProtobufWrapper::Serialise(const MessagePtr& msg)
+DataBufferPtr ProtobufWrapper::Serialise(const MessagePtr& msg)
 {
   std::string msgType = typeid(*msg).name();
 
@@ -28,7 +28,7 @@ const DataBufferPtr ProtobufWrapper::Serialise(const MessagePtr& msg)
   return buffer2;
 }
 
-const ProtobufMessagePtr ProtobufWrapper::Deserialise(const DataBufferPtr& buffer)
+ProtobufMessagePtr ProtobufWrapper::Deserialise(const DataBufferPtr& buffer)
 {
   Exchange::Wrapper wrapper;
   wrapper.ParseFromArray(buffer->data(), buffer->size());

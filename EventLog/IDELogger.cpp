@@ -5,6 +5,10 @@
 #include "IDELogger.h"
 
 
+IDELogger::~IDELogger()
+{
+}
+
 void IDELogger::HandleLogEvent(const LogEventDataPtr& pLog)
 {
   if (pLog == nullptr)
@@ -13,12 +17,12 @@ void IDELogger::HandleLogEvent(const LogEventDataPtr& pLog)
   // Format log message output for the Visual Studio Debugger
   std::stringstream ss;
 
-  ss << pLog->File()
-    << "(" << pLog->Line() << "): "
-    << std::setfill('0') << std::setw(8) << pLog->DisplayTime()
-    << " [" << pLog->ThreadId() << "] "
-    << pLog->Level() << ": "
-    << pLog->Text() << std::endl;
+  ss << pLog->File
+    << "(" << pLog->Line << "): "
+    << std::setfill('0') << std::setw(8) << pLog->DisplayTime
+    << " [" << pLog->ThreadId << "] "
+    << pLog->Severity << ": "
+    << pLog->Text << std::endl;
 
   OutputDebugString(ss.str().c_str());
 }

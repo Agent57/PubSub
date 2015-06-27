@@ -39,9 +39,10 @@ public:
   RemoteSubscriptionMessage(const Exchange::RemoteSubscription &message)
     : m_message(message) {}
 
-  std::string GetTypeName() const { return m_message.GetTypeName(); }
+  std::string GetTypeName() const override
+  { return m_message.GetTypeName(); }
 
-  void Accept(MessageVisitorPtr visitor) const;
+  void Accept(MessageVisitorPtr visitor) const override;
 };
 
 // Message handler

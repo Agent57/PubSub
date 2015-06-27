@@ -8,7 +8,6 @@
 
 class TimedEvent : public ITimedEvent
 {
-private:
   long long m_duration;
   long long m_expire;
   int m_timerId;
@@ -18,12 +17,12 @@ private:
   TimedEvent() {};
 
 public:
-  TimedEvent(const int duration, const int timerId, const MessagePtr& event, bool repeat = false);
+  TimedEvent(int duration, int timerId, const MessagePtr& event, bool repeat = false);
 
-  TimeoutPtr Timeout() const;
-  const int Id() const;
-  const MessagePtr Event() const;
-  bool Repeatable() const;
-  const long long Duration() const;
-  void ExtendTimeout(const long long duration);
+  TimeoutPtr Timeout() const override;
+  int Id() const override;
+  MessagePtr Event() const override;
+  bool Repeatable() const override;
+  long long Duration() const override;
+  void ExtendTimeout(long long duration) override;
 };
