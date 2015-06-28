@@ -1,4 +1,3 @@
-#pragma warning (disable:4251)
 #pragma once
 
 #include <memory>
@@ -17,25 +16,25 @@ typedef enum
 
 class LogEventData
 {
-  static const std::string _levels[];
+  static const std::string _level[];
 
   LogEventData() {}
 
 public:
   std::string Severity;
-  std::thread::id ThreadId;
   std::string DisplayTime;
   std::string Text;
   std::string File;
   std::string Function;
   int Line;
+  std::thread::id ThreadId;
 
   LogEventData(LogLevel level,
-                std::string time,
-                std::string text,
-                std::string file,
-                std::string function,
-                int line);
+               std::string time,
+               std::string text,
+               std::string file,
+               std::string function,
+               int line);
 
   static std::string Level(LogLevel level);
 };

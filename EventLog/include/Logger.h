@@ -16,8 +16,8 @@
   { \
     std::ostringstream ss; \
     ss << text; \
-    LogEventData pLog(level, Logger::RunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
-    Logger::Log(pLog); \
+    LogEventData pLog(level, Logger::ElapsedRunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
+    Logger::QueueLogEvent(pLog); \
   } \
 }
 
@@ -26,8 +26,8 @@ class Logger
   #define LoggerInfo(text) { \
     std::ostringstream ss; \
     ss << text; \
-    LogEventData pLog (Info, Logger::RunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
-    Logger::Log(pLog); \
+    LogEventData pLog (Info, Logger::ElapsedRunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
+    Logger::QueueLogEvent(pLog); \
   }
 
   typedef std::list<LogEventHandlerPtr> LogEventHandlerSet;
@@ -40,7 +40,7 @@ class Logger
   std::condition_variable m_conditional;
   LogEventQueuePtr m_queue;
   LogEventQueuePtr m_buffer;
-  static std::chrono::high_resolution_clock::time_point m_start;
+  std::chrono::high_resolution_clock::time_point m_start;
   std::atomic_bool m_enabled;
   std::atomic_bool m_running;
   std::atomic<LogLevel> m_max_level;
@@ -50,29 +50,31 @@ class Logger
   Logger();
   Logger(Logger const& copy);
   Logger& operator= (Logger const& copy);
-
+  static Logger& Singleton();
   ~Logger();
 
+  void Start();
   void LogWorker();
-  void CallLogHandlers(const LogEventDataPtr& pLog);
-  void ProcessLogEvents(const LogEventQueuePtr& events);
   void BufferEventQueue();
-  void QueueLogEvent(const LogEventData& pLog);
-  bool CheckLogLevelEnabled(const LogLevel level);
+  void ProcessLogEvents(const LogEventQueuePtr& events);
+  void CallLogHandlers(const LogEventDataPtr& pLog);
+
+  std::string ElapsedRunTimeImpl();
+  void QueueLogEventImpl(const LogEventData& pLog);
+  void SetLogLevelImpl(LogLevel level);
+  void SetEnabledImpl(bool enable);
+  bool IsEnabledImpl() const;
+  void AttachHandlerImpl(const LogEventHandlerPtr& pHandler);
+  void DetachHandlerImpl(const LogEventHandlerPtr& pHandler);
+  bool CheckLogAccessImpl(const LogLevel level) const;
 
 public:
-  static Logger& Singleton();
-
-  static void Log(const LogEventData& pLog);
+  static std::string ElapsedRunTime();
+  static void QueueLogEvent(const LogEventData& pLog);
+  static void SetLogLevel(const LogLevel level);
+  static void SetEnabled(bool enable);
+  static bool IsEnabled();
+  static void AttachHandler(const LogEventHandlerPtr& pHandler);
+  static void DetachHandler(const LogEventHandlerPtr& pHandler);
   static bool CheckLogAccess(LogLevel level);
-  static std::string RunTime();
-
-  void Start();
-  void SetLogLevel(const LogLevel level);
-
-  void Enabled(bool enable);
-  bool Enabled() const;
-  void Shutdown();
-  void AttachHandler(const LogEventHandlerPtr& pHandler);
-  void DetachHandler(const LogEventHandlerPtr& pHandler);
 };

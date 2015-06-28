@@ -19,11 +19,9 @@
 
 int main(int argc, char** argv)
 {
-  Logger::Singleton().AttachHandler(std::make_shared<ConsoleLogger>());
-  Logger::Singleton().Start();
-
+  Logger::AttachHandler(std::make_shared<ConsoleLogger>());
+  Logger::SetLogLevel(Trace);
   LogEvent(Info, "Application Running...");
-  //Logger::Singleton().SetLogLevel(Debug);
 
   // Set up the handler for a RemoteSubscription message
   MessageBroker broker;
@@ -58,7 +56,7 @@ int main(int argc, char** argv)
   // Pause the console waiting on user input
   LogEvent(Info, "Press <Enter> key to exit...");
   std::cin.ignore();
-  LogEvent(Info, "Application Shutdown Complete");
+  LogEvent(Info, "Application Shutting down");
 
 
   return 0;
