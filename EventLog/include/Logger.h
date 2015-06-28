@@ -12,12 +12,12 @@
 #include <sstream>
 
 #define LogEvent(level, text) { \
-  if (Logger::Singleton().CheckLogLevel(level)) \
+  if (Logger::CheckLogAccess(level)) \
   { \
     std::ostringstream ss; \
     ss << text; \
-    LogEventDataPtr pLog = std::make_shared<LogEventData>(level, Logger::RunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
-    Logger::Singleton().LogStream(pLog); \
+    LogEventData pLog(level, Logger::RunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
+    Logger::Log(pLog); \
   } \
 }
 
@@ -26,14 +26,14 @@ class Logger
   #define LoggerInfo(text) { \
     std::ostringstream ss; \
     ss << text; \
-    LogEventDataPtr pLog = std::make_shared<LogEventData>(Info, Logger::RunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
-    Logger::Singleton().LogStream(pLog); \
+    LogEventData pLog (Info, Logger::RunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
+    Logger::Log(pLog); \
   }
 
   typedef std::list<LogEventHandlerPtr> LogEventHandlerSet;
   typedef LogEventHandlerSet::iterator LogEventHandlerSetItem;
   typedef std::list<LogEventDataPtr> LogEventQueue;
-  typedef std::shared_ptr<LogEventQueue> LogEventQueuePtr;
+  typedef std::unique_ptr<LogEventQueue> LogEventQueuePtr;
 
   std::mutex m_lock;
   std::mutex m_handlerLock;
@@ -57,18 +57,21 @@ class Logger
   void CallLogHandlers(const LogEventDataPtr& pLog);
   void ProcessLogEvents(const LogEventQueuePtr& events);
   void BufferEventQueue();
+  void QueueLogEvent(const LogEventData& pLog);
+  bool CheckLogLevelEnabled(const LogLevel level);
 
 public:
   static Logger& Singleton();
 
+  static void Log(const LogEventData& pLog);
+  static bool CheckLogAccess(LogLevel level);
   static std::string RunTime();
 
   void Start();
   void SetLogLevel(const LogLevel level);
-  bool CheckLogLevel(const LogLevel level) const;
+
   void Enabled(bool enable);
   bool Enabled() const;
-  void LogStream(const LogEventDataPtr& pLog);
   void Shutdown();
   void AttachHandler(const LogEventHandlerPtr& pHandler);
   void DetachHandler(const LogEventHandlerPtr& pHandler);

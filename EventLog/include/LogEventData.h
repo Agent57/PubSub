@@ -40,4 +40,4 @@ public:
   static std::string Level(LogLevel level);
 };
 
-typedef std::shared_ptr<LogEventData> LogEventDataPtr;
+typedef std::unique_ptr<LogEventData> LogEventDataPtr;

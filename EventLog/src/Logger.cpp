@@ -16,8 +16,8 @@ Logger& Logger::Singleton()
 
 Logger::Logger()
 {
-  m_queue = std::make_shared<LogEventQueue>();
-  m_buffer = std::make_shared<LogEventQueue>();
+  m_queue = std::make_unique<LogEventQueue>();
+  m_buffer = std::make_unique<LogEventQueue>();
   m_start = std::chrono::high_resolution_clock::now();
   m_enabled =  true;
   m_max_level = Trace;
@@ -35,6 +35,9 @@ Logger::~Logger()
 
 void Logger::Start()
 {
+  if (m_running)
+    return;
+
   m_running = true;
   if (IsDebuggerPresent())
     AttachHandler(std::make_shared<IDELogger>());
@@ -65,9 +68,14 @@ void Logger::SetLogLevel(LogLevel level)
   LoggerInfo("Log output level set to " << LogEventData::Level(level));
 }
 
-bool Logger::CheckLogLevel(LogLevel level) const
+bool Logger::CheckLogLevelEnabled(LogLevel level)
 {
   return level <= m_max_level && m_enabled;
+}
+
+bool Logger::CheckLogAccess(LogLevel level)
+{
+  return Logger::Singleton().CheckLogLevelEnabled(level);
 }
 
 void Logger::Enabled(bool enable)
@@ -84,10 +92,15 @@ bool Logger::Enabled() const
   return m_enabled;
 }
 
-void Logger::LogStream(const LogEventDataPtr& pLog)
+void Logger::Log(const LogEventData& pLog)
+{
+  Singleton().QueueLogEvent(pLog);
+}
+
+void Logger::QueueLogEvent(const LogEventData& pLog)
 {
   std::lock_guard<std::mutex> lock(m_lock);
-  m_queue->push_back(pLog);
+  m_queue->push_back(std::make_unique<LogEventData>(pLog));
   m_conditional.notify_all();
 }
 
@@ -131,18 +144,18 @@ void Logger::BufferEventQueue()
 
   std::lock_guard<std::mutex> lock(m_lock);
   m_buffer->clear();
-  auto temp = m_buffer;
-  m_buffer = m_queue;
-  m_queue = temp;
+  auto temp = move(m_buffer);
+  m_buffer = move(m_queue);
+  m_queue = move(temp);
 }
 
 void Logger::ProcessLogEvents(const LogEventQueuePtr& events)
 {
   while(!events->empty())
   {
-    const LogEventDataPtr pLog = events->front();
-    events->pop_front();
+    const auto& pLog = events->front();
     CallLogHandlers(pLog);
+    events->pop_front();
   }
 }
 
@@ -161,8 +174,8 @@ void Logger::DetachHandler(const LogEventHandlerPtr& pHandler)
 void Logger::CallLogHandlers(const LogEventDataPtr& pLog)
 {
   std::lock_guard<std::mutex> lock(m_handlerLock);
-  for (LogEventHandlerSetItem item = m_handlers.begin(); item != m_handlers.end(); ++item)
+  for (const auto& handler : m_handlers)
   {
-    (*item)->HandleLogEvent(pLog);
+    handler->HandleLogEvent(pLog);
   }
 }
