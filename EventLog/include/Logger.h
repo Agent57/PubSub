@@ -40,7 +40,7 @@ class Logger
   std::condition_variable m_conditional;
   LogEventQueuePtr m_queue;
   LogEventQueuePtr m_buffer;
-  std::chrono::high_resolution_clock::time_point m_start;
+  static std::chrono::high_resolution_clock::time_point m_start;
   std::atomic_bool m_enabled;
   std::atomic_bool m_running;
   std::atomic<LogLevel> m_max_level;
@@ -65,8 +65,6 @@ public:
 
   void Start();
   void SetLogLevel(const LogLevel level);
-  std::chrono::high_resolution_clock::time_point StartTime() const;
-  std::string DisplayTime() const;
   bool CheckLogLevel(const LogLevel level) const;
   void Enabled(bool enable);
   bool Enabled() const;

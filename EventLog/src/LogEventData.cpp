@@ -16,18 +16,17 @@ std::string LogEventData::Level(LogLevel level)
 }
 
 LogEventData::LogEventData(LogLevel level,
-                           const std::string& time,
-                           const std::string& text,
-                           const std::string& file,
-                           const std::string& function,
-                           const int line)
+                           std::string time,
+                           std::string text,
+                           std::string file,
+                           std::string function,
+                           int line)
                            : Severity(_levels[level]),
-                           DisplayTime(time),
-                           Text(text),
-                           File(file),
-                           Function(function),
-                           Line(line)
+                             DisplayTime(time),
+                             Text(text),
+                             File(file),
+                             Function(function),
+                             Line(line)
 {
-  // Fill in the remaining LogEvent details
   ThreadId = std::this_thread::get_id();
 }

@@ -106,7 +106,7 @@ $(ProjectDir)\MessageDefinitions\ProtoBuild.bat</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\EventLog\include;..\CommonMessages\MessageDefinitions;..\Thirdparty\protobuf\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\EventLog\include;..\CommonMessages\MessageDefinitions;..\..\Thirdparty\protobuf\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>

@@ -5,7 +5,7 @@
 #include <string>
 #include <thread>
 
-enum LogLevel
+typedef enum
 {
   Fatal,
   Error,
@@ -13,12 +13,11 @@ enum LogLevel
   Info,
   Debug,
   Trace
-};
-
+} LogLevel;
 
 class LogEventData
 {
-  const static std::string _levels[];
+  static const std::string _levels[];
 
   LogEventData() {}
 
@@ -32,11 +31,11 @@ public:
   int Line;
 
   LogEventData(LogLevel level,
-                const std::string& time,
-                const std::string& text,
-                const std::string& file,
-                const std::string& function,
-                const int line);
+                std::string time,
+                std::string text,
+                std::string file,
+                std::string function,
+                int line);
 
   static std::string Level(LogLevel level);
 };

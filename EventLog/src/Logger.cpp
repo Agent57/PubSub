@@ -6,6 +6,7 @@
 #include <chrono>
 #include <iomanip>
 
+std::chrono::high_resolution_clock::time_point Logger::m_start;
 
 Logger& Logger::Singleton()
 {
@@ -64,11 +65,6 @@ void Logger::SetLogLevel(LogLevel level)
   LoggerInfo("Log output level set to " << LogEventData::Level(level));
 }
 
-std::chrono::high_resolution_clock::time_point Logger::StartTime() const
-{
-  return m_start;
-}
-
 bool Logger::CheckLogLevel(LogLevel level) const
 {
   return level <= m_max_level && m_enabled;
@@ -108,14 +104,12 @@ std::string Logger::RunTime()
 {
   // Convert the internal log time value into regular clock time
   auto now = std::chrono::high_resolution_clock::now();
-  auto start = Logger::Singleton().StartTime();
-  auto runtime = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+  auto runtime = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_start).count();
   int milliseconds = runtime % 1000;
-  auto x = runtime / 1000;
-  int seconds = x % 60;
-  int minutes = x / 60 % 60;
-  int hours = x / 3600 % 24;
-  auto days = x / 86400;
+  int seconds = runtime / 1000 % 60;
+  int minutes = runtime / 60000 % 60;
+  int hours = runtime / 3600000 % 24;
+  auto days = runtime / 86400000;
 
   // Output the time in an easily readable format
   std::stringstream ss;

@@ -26,7 +26,7 @@ bool DomainManagementHandlers::Process(const std::shared_ptr<Exchange::Wrapper c
 bool StringParameterHandler::Process(const std::shared_ptr<Exchange::StringParameter const>& pMsg)
 {
   static int x = 0;
-  LogEvent(Debug, pMsg->data());
+  LogEvent(Debug, "Message content... [" << pMsg->data() << "]");
   auto msg = std::make_shared<Exchange::RemoteSubscription>();
   msg->set_subscriptionid(x++);
 
