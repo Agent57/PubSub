@@ -18,11 +18,11 @@ void IDELogger::HandleLogEvent(const LogEventDataPtr& pLog)
   std::stringstream ss;
 
   ss << pLog->File
-    << "(" << pLog->Line << "): "
-    << std::setfill('0') << std::setw(8) << pLog->DisplayTime
-    << " [" << pLog->ThreadId << "] "
-    << pLog->Severity << ": "
-    << pLog->Text << std::endl;
+     << "(" << pLog->Line << "): "
+     << std::setfill('0') << std::setw(8) << pLog->DisplayTime
+     << " [" << pLog->ThreadId << "] "
+     << pLog->Severity << ": "
+     << pLog->Text << std::endl;
 
   OutputDebugString(ss.str().c_str());
 }

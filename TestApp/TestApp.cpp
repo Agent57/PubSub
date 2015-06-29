@@ -19,10 +19,9 @@
 
 int main(int argc, char** argv)
 {
-  Logger::AttachHandler(std::make_shared<ConsoleLogger>());
+  Logger::AttachHandler(std::make_unique<ConsoleLogger>());
   Logger::SetLogLevel(Trace);
   LogEvent(Info, "Application Running...");
-
   // Set up the handler for a RemoteSubscription message
   MessageBroker broker;
   auto  visitor = std::make_shared<RemoteSubscriptionVisitor>();

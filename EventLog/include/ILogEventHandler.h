@@ -11,4 +11,4 @@ public:
   virtual void HandleLogEvent(const LogEventDataPtr& pLog) = 0;
 };
 
-typedef std::shared_ptr<ILogEventHandler> LogEventHandlerPtr;
+typedef std::unique_ptr<ILogEventHandler> LogEventHandlerPtr;

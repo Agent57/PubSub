@@ -15,10 +15,11 @@ Logger::Logger()
   m_max_level = Info;
   m_running = false;
 
-  LoggerInfo("Application logging started");
+  LogEventData pLog(Info, ElapsedRunTime(), "Application logging started", __FILE__, __FUNCTION__, __LINE__);
+  QueueLogEvent(pLog);
 }
 
-Logger& Logger::Singleton()
+Logger& Logger::Instance()
 {
   static Logger instance;
   return instance;
@@ -30,7 +31,8 @@ Logger::~Logger()
     return;
 
   m_running = false;
-  LoggerInfo("Application logging complete");
+  LogEventData pLog(Info, ElapsedRunTime(), "Application logging complete", __FILE__, __FUNCTION__, __LINE__);
+  QueueLogEvent(pLog);
 
   if (m_logger.joinable())
     m_logger.join();
@@ -46,7 +48,7 @@ void Logger::Start()
   m_running = true;
 
   if (IsDebuggerPresent())
-    m_handlers.push_back(std::make_shared<IDELogger>());
+    m_handlers.push_back(std::make_unique<IDELogger>());
 
   m_logger = std::thread(&Logger::LogWorker, this);
 }
@@ -129,7 +131,11 @@ void Logger::SetLogLevelImpl(LogLevel level)
     return;
 
   m_max_level = level;
-  LoggerInfo("Log output level set to " << LogEventData::Level(level));
+
+  std::ostringstream ss;
+  ss << "Log output level set to " << LogEventData::Level(level);
+  LogEventData pLog(Info, ElapsedRunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
+  QueueLogEvent(pLog);
 }
 
 void Logger::SetEnabledImpl(bool enable)
@@ -138,7 +144,11 @@ void Logger::SetEnabledImpl(bool enable)
     return;
 
   m_enabled = enable;
-  LoggerInfo("Logging output is now " << m_enabled ? "enabled" : "disabled");
+
+  std::ostringstream ss;
+  ss << "Logging output is now " << (m_enabled ? "enabled" : "disabled");
+  LogEventData pLog(Info, ElapsedRunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
+  QueueLogEvent(pLog);
 }
 
 bool Logger::IsEnabledImpl() const
@@ -146,17 +156,11 @@ bool Logger::IsEnabledImpl() const
   return m_enabled;
 }
 
-void Logger::AttachHandlerImpl(const LogEventHandlerPtr& pHandler)
+void Logger::AttachHandlerImpl(LogEventHandlerPtr pHandler)
 {
   std::lock_guard<std::mutex> lock(m_handlerLock);
-  m_handlers.push_back(pHandler);
+  m_handlers.push_back(move(pHandler));
   Start();
-}
-
-void Logger::DetachHandlerImpl(const LogEventHandlerPtr& pHandler)
-{
-  std::lock_guard<std::mutex> lock(m_handlerLock);
-  m_handlers.remove(pHandler);
 }
 
 bool Logger::CheckLogAccessImpl(LogLevel level) const
@@ -167,40 +171,35 @@ bool Logger::CheckLogAccessImpl(LogLevel level) const
 // Static accessor methods
 std::string Logger::ElapsedRunTime()
 {
-  return Singleton().ElapsedRunTimeImpl();
+  return Instance().ElapsedRunTimeImpl();
 }
 
 void Logger::QueueLogEvent(const LogEventData& pLog)
 {
-  Singleton().QueueLogEventImpl(pLog);
+  Instance().QueueLogEventImpl(pLog);
 }
 
 void Logger::SetLogLevel(LogLevel level)
 {
-  Singleton().SetLogLevelImpl(level);
+  Instance().SetLogLevelImpl(level);
 }
 
 void Logger::SetEnabled(bool enable)
 {
-  Singleton().SetEnabledImpl(enable);
+  Instance().SetEnabledImpl(enable);
 }
 
 bool Logger::IsEnabled()
 {
-  return Singleton().IsEnabledImpl();
+  return Instance().IsEnabledImpl();
 }
 
-void Logger::AttachHandler(const LogEventHandlerPtr& pHandler)
+void Logger::AttachHandler(LogEventHandlerPtr pHandler)
 {
-  Singleton().AttachHandlerImpl(pHandler);
-}
-
-void Logger::DetachHandler(const LogEventHandlerPtr& pHandler)
-{
-  Singleton().DetachHandlerImpl(pHandler);
+  Instance().AttachHandlerImpl(move(pHandler));
 }
 
 bool Logger::CheckLogAccess(LogLevel level)
 {
-  return Logger::Singleton().CheckLogAccessImpl(level);
+  return Instance().CheckLogAccessImpl(level);
 }

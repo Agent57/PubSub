@@ -23,15 +23,6 @@
 
 class Logger
 {
-  #define LoggerInfo(text) { \
-    std::ostringstream ss; \
-    ss << text; \
-    LogEventData pLog (Info, Logger::ElapsedRunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
-    Logger::QueueLogEvent(pLog); \
-  }
-
-  typedef std::list<LogEventHandlerPtr> LogEventHandlerSet;
-  typedef LogEventHandlerSet::iterator LogEventHandlerSetItem;
   typedef std::list<LogEventDataPtr> LogEventQueue;
   typedef std::unique_ptr<LogEventQueue> LogEventQueuePtr;
 
@@ -50,7 +41,7 @@ class Logger
   Logger();
   Logger(Logger const& copy);
   Logger& operator= (Logger const& copy);
-  static Logger& Singleton();
+  static Logger& Instance();
   ~Logger();
 
   void Start();
@@ -64,8 +55,7 @@ class Logger
   void SetLogLevelImpl(LogLevel level);
   void SetEnabledImpl(bool enable);
   bool IsEnabledImpl() const;
-  void AttachHandlerImpl(const LogEventHandlerPtr& pHandler);
-  void DetachHandlerImpl(const LogEventHandlerPtr& pHandler);
+  void AttachHandlerImpl(LogEventHandlerPtr pHandler);
   bool CheckLogAccessImpl(const LogLevel level) const;
 
 public:
@@ -74,7 +64,6 @@ public:
   static void SetLogLevel(const LogLevel level);
   static void SetEnabled(bool enable);
   static bool IsEnabled();
-  static void AttachHandler(const LogEventHandlerPtr& pHandler);
-  static void DetachHandler(const LogEventHandlerPtr& pHandler);
+  static void AttachHandler(LogEventHandlerPtr pHandler);
   static bool CheckLogAccess(LogLevel level);
 };
