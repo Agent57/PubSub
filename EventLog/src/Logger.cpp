@@ -9,13 +9,12 @@
 Logger::Logger()
 {
   m_queue = std::make_unique<LogEventQueue>();
-  m_buffer = std::make_unique<LogEventQueue>();
   m_start = std::chrono::high_resolution_clock::now();
   m_enabled =  true;
   m_max_level = Info;
   m_running = false;
 
-  LogEventData pLog(Info, ElapsedRunTime(), "Application logging started", __FILE__, __FUNCTION__, __LINE__);
+  LogEventData pLog(Info, ElapsedTime(), "Application logging started", __FILE__, __FUNCTION__, __LINE__);
   QueueLogEvent(pLog);
 }
 
@@ -31,12 +30,11 @@ Logger::~Logger()
     return;
 
   m_running = false;
-  LogEventData pLog(Info, ElapsedRunTime(), "Application logging complete", __FILE__, __FUNCTION__, __LINE__);
-  QueueLogEvent(pLog);
-
   if (m_logger.joinable())
     m_logger.join();
 
+  LogEventData pLog(Info, ElapsedTime(), "Application logging complete", __FILE__, __FUNCTION__, __LINE__);
+  QueueLogEvent(pLog);
   ProcessLogEvents(m_queue);
 }
 
@@ -57,24 +55,27 @@ void Logger::LogWorker()
 {
   while (m_running)
   {
-    BufferEventQueue();
-    ProcessLogEvents(m_buffer);
+    WaitForQueuedEvent();
+    auto buffer = BufferEventQueue();
+    ProcessLogEvents(buffer);
   }
 }
 
-void Logger::BufferEventQueue()
+void Logger::WaitForQueuedEvent()
 {
   if (m_queue->empty())
   {
-    auto waitlock = std::unique_lock<std::mutex>(m_lock);
-    m_conditional.wait(waitlock);
+    std::unique_lock<std::mutex> lock(m_lock);
+    m_conditional.wait(lock);
   }
+}
 
+Logger::LogEventQueuePtr Logger::BufferEventQueue()
+{
   std::lock_guard<std::mutex> lock(m_lock);
-  m_buffer->clear();
-  auto temp = move(m_buffer);
-  m_buffer = move(m_queue);
-  m_queue = move(temp);
+  auto buffer = move(m_queue);
+  m_queue = std::make_unique<LogEventQueue>();
+  return buffer;
 }
 
 void Logger::ProcessLogEvents(const LogEventQueuePtr& events)
@@ -97,7 +98,7 @@ void Logger::CallLogHandlers(const LogEventDataPtr& pLog)
 }
 
 // Private implementation of static accessors
-std::string Logger::ElapsedRunTimeImpl()
+std::string Logger::ElapsedTimeImpl()
 {
   // Convert the internal log time value into regular clock time
   auto now = std::chrono::high_resolution_clock::now();
@@ -134,7 +135,7 @@ void Logger::SetLogLevelImpl(LogLevel level)
 
   std::ostringstream ss;
   ss << "Log output level set to " << LogEventData::Level(level);
-  LogEventData pLog(Info, ElapsedRunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
+  LogEventData pLog(Info, ElapsedTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
   QueueLogEvent(pLog);
 }
 
@@ -147,7 +148,7 @@ void Logger::SetEnabledImpl(bool enable)
 
   std::ostringstream ss;
   ss << "Logging output is now " << (m_enabled ? "enabled" : "disabled");
-  LogEventData pLog(Info, ElapsedRunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
+  LogEventData pLog(Info, ElapsedTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
   QueueLogEvent(pLog);
 }
 
@@ -169,9 +170,9 @@ bool Logger::CheckLogAccessImpl(LogLevel level) const
 }
 
 // Static accessor methods
-std::string Logger::ElapsedRunTime()
+std::string Logger::ElapsedTime()
 {
-  return Instance().ElapsedRunTimeImpl();
+  return Instance().ElapsedTimeImpl();
 }
 
 void Logger::QueueLogEvent(const LogEventData& pLog)

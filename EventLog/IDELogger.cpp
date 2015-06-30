@@ -5,10 +5,6 @@
 #include "IDELogger.h"
 
 
-IDELogger::~IDELogger()
-{
-}
-
 void IDELogger::HandleLogEvent(const LogEventDataPtr& pLog)
 {
   if (pLog == nullptr)

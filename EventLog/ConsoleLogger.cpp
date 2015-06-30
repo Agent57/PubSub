@@ -1,12 +1,7 @@
-
 #include <iomanip>
 #include <iostream>
 
 #include "ConsoleLogger.h"
-
-ConsoleLogger::~ConsoleLogger()
-{
-}
 
 void ConsoleLogger::HandleLogEvent(const LogEventDataPtr& pLog)
 {

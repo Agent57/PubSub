@@ -16,7 +16,7 @@
   { \
     std::ostringstream ss; \
     ss << text; \
-    LogEventData pLog(level, Logger::ElapsedRunTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
+    LogEventData pLog(level, Logger::ElapsedTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__); \
     Logger::QueueLogEvent(pLog); \
   } \
 }
@@ -30,7 +30,6 @@ class Logger
   std::mutex m_handlerLock;
   std::condition_variable m_conditional;
   LogEventQueuePtr m_queue;
-  LogEventQueuePtr m_buffer;
   std::chrono::high_resolution_clock::time_point m_start;
   std::atomic_bool m_enabled;
   std::atomic_bool m_running;
@@ -46,11 +45,12 @@ class Logger
 
   void Start();
   void LogWorker();
-  void BufferEventQueue();
+  void WaitForQueuedEvent();
+  LogEventQueuePtr BufferEventQueue();
   void ProcessLogEvents(const LogEventQueuePtr& events);
   void CallLogHandlers(const LogEventDataPtr& pLog);
 
-  std::string ElapsedRunTimeImpl();
+  std::string ElapsedTimeImpl();
   void QueueLogEventImpl(const LogEventData& pLog);
   void SetLogLevelImpl(LogLevel level);
   void SetEnabledImpl(bool enable);
@@ -59,7 +59,7 @@ class Logger
   bool CheckLogAccessImpl(const LogLevel level) const;
 
 public:
-  static std::string ElapsedRunTime();
+  static std::string ElapsedTime();
   static void QueueLogEvent(const LogEventData& pLog);
   static void SetLogLevel(const LogLevel level);
   static void SetEnabled(bool enable);
