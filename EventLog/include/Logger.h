@@ -1,7 +1,7 @@
 #pragma once
 
 #include "LogEventData.h"
-#include "ILogEventHandler.h"
+#include "LogEventHandler.h"
 
 #include <atomic>
 #include <condition_variable>

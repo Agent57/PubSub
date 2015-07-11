@@ -93,17 +93,20 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ConsoleLogger.cpp" />
-    <ClCompile Include="IDELogger.cpp" />
-    <ClCompile Include="src\LogEventData.cpp" />
-    <ClCompile Include="src\Logger.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\ConsoleLogger.h" />
     <ClInclude Include="include\IDELogger.h" />
-    <ClInclude Include="include\ILogEventHandler.h" />
+    <ClInclude Include="include\ILogFormatter.h" />
+    <ClInclude Include="include\ILogWriter.h" />
+    <ClInclude Include="include\LogEventHandler.h" />
     <ClInclude Include="include\LogEventData.h" />
     <ClInclude Include="include\Logger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\ConsoleLogger.cpp" />
+    <ClCompile Include="src\IDELogger.cpp" />
+    <ClCompile Include="src\LogEventData.cpp" />
+    <ClCompile Include="src\LogEventHandler.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ILogEventHandler.h"
+#include "LogEventHandler.h"
 
 class IDELogWriter : public ILogWriter
 {
