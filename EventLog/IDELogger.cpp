@@ -5,20 +5,20 @@
 #include "IDELogger.h"
 
 
-void IDELogger::HandleLogEvent(const LogEventDataPtr& pLog)
+void IDELogger::FormatLogOutput(const LogEventData& event)
 {
-  if (pLog == nullptr)
-    return;
-
   // Format log message output for the Visual Studio Debugger
-  std::stringstream ss;
+  std::stringstream text;
+  text << event.File
+       << "(" << event.Line << "): "
+       << std::setfill('0') << std::setw(8) << event.DisplayTime
+       << " [" << event.ThreadId << "] "
+       << event.Severity() << ": "
+       << event.Text << std::endl;
+  SetLogOutput(text.str());
+}
 
-  ss << pLog->File
-     << "(" << pLog->Line << "): "
-     << std::setfill('0') << std::setw(8) << pLog->DisplayTime
-     << " [" << pLog->ThreadId << "] "
-     << pLog->Severity << ": "
-     << pLog->Text << std::endl;
-
-  OutputDebugString(ss.str().c_str());
+void IDEWriter::WriteLogEvent(std::string text)
+{
+  OutputDebugString(text.c_str());
 }

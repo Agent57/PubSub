@@ -1,16 +1,21 @@
-#include <iomanip>
-#include <iostream>
-
 #include "ConsoleLogger.h"
 
-void ConsoleLogger::HandleLogEvent(const LogEventDataPtr& pLog)
-{
-  if (pLog == nullptr)
-    return;
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
+void ConsoleLogger::FormatLogOutput(const LogEventData& event)
+{
   // Format log message output for the console
-  std::cout << std::right << std::setfill('0') << std::setw(8) << pLog->DisplayTime
-            << "  " << std::setw(5) << pLog->ThreadId << std::setfill(' ')
-            << "  " << std::left << std::setw(9) << pLog->Severity
-            << pLog->Text << std::endl;
+  std::stringstream text;
+  text << std::right << std::setfill('0') << std::setw(8) << event.DisplayTime
+       << "  " << std::setw(5) << event.ThreadId << std::setfill(' ')
+       << "  " << std::left << std::setw(9) << event.Severity()
+       << event.Text << std::endl;
+  SetLogOutput(text.str());
+}
+
+void ConsoleWriter::WriteLogEvent(std::string text)
+{
+  std::cout << text;
 }

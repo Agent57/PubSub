@@ -2,8 +2,19 @@
 
 #include "ILogEventHandler.h"
 
+class ConsoleWriter : public ILogWriter
+{
+public:
+  void WriteLogEvent(std::string) override;
+};
+
 class ConsoleLogger : public ILogEventHandler
 {
 public:
-  void HandleLogEvent(const LogEventDataPtr& pLog) override;
+  ConsoleLogger()
+  {
+    SetLogOutputLevel(Trace);
+  }
+
+  void FormatLogOutput(const LogEventData& event) override;
 };

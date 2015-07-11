@@ -45,17 +45,17 @@ class Logger
 
   void Start();
   void LogWorker();
-  void WaitForQueuedEvent();
+  std::cv_status WaitForQueuedEvent();
   LogEventQueuePtr BufferEventQueue();
   void ProcessLogEvents(const LogEventQueuePtr& events);
-  void CallLogHandlers(const LogEventDataPtr& pLog);
+  void CallLogHandlers(const LogEventData& event);
 
   std::string ElapsedTimeImpl();
   void QueueLogEventImpl(const LogEventData& pLog);
   void SetLogLevelImpl(LogLevel level);
   void SetEnabledImpl(bool enable);
   bool IsEnabledImpl() const;
-  void AttachHandlerImpl(LogEventHandlerPtr pHandler);
+  void AttachHandlerImpl(LogEventHandlerPtr pHandler, LogWriterPtr writer);
   bool CheckLogAccessImpl(const LogLevel level) const;
 
 public:
@@ -64,6 +64,6 @@ public:
   static void SetLogLevel(const LogLevel level);
   static void SetEnabled(bool enable);
   static bool IsEnabled();
-  static void AttachHandler(LogEventHandlerPtr pHandler);
+  static void AttachHandler(LogEventHandlerPtr handler, LogWriterPtr writer);
   static bool CheckLogAccess(LogLevel level);
 };

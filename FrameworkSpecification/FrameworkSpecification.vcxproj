@@ -134,6 +134,7 @@ echo $(ProjectDir)\MessageDefinitions\ProtoBuild.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DomainManagerSpecification.cpp" />
+    <ClCompile Include="IDELoggerSpecification.cpp" />
     <ClCompile Include="MessageDefinitions\TestMessage.pb.cc" />
     <ClCompile Include="ProtobufWrapperSpecification.cpp" />
     <ClCompile Include="TcpConnectorSpecification.cpp" />

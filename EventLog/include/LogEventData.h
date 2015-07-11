@@ -17,18 +17,18 @@ typedef enum
 class LogEventData
 {
   static const std::string _level[];
+  std::string m_text;
 
   LogEventData() {}
 
 public:
-  std::string Severity;
+  LogLevel Level;
   std::string DisplayTime;
   std::string Text;
   std::string File;
   std::string Function;
   int Line;
   std::thread::id ThreadId;
-
   LogEventData(LogLevel level,
                std::string time,
                std::string text,
@@ -36,7 +36,9 @@ public:
                std::string function,
                int line);
 
-  static std::string Level(LogLevel level);
+  std::string Severity() const;
+
+  static std::string Severity(LogLevel level);
 };
 
 typedef std::unique_ptr<LogEventData> LogEventDataPtr;

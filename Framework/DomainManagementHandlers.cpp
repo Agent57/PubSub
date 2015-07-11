@@ -7,7 +7,7 @@ bool DomainManagementHandlers::Process(const std::shared_ptr<Exchange::RemoteSub
   m_domain.lock()->SetTimer(1500, nullptr);
 
   std::ostringstream stringStream;
-  stringStream << "Remote Subscription Id: " << subscriptionId;
+  stringStream << "Subscription Id: " << subscriptionId;
 
   auto msg = std::make_shared<Exchange::StringParameter>();
   msg->set_data(stringStream.str());

@@ -16,7 +16,7 @@ LogEventData::LogEventData(LogLevel level,
                            std::string file,
                            std::string function,
                            int line)
-                           : Severity(move(_level[level])),
+                           : Level(level),
                              DisplayTime(move(time)),
                              Text(move(text)),
                              File(move(file)),
@@ -26,7 +26,12 @@ LogEventData::LogEventData(LogLevel level,
   ThreadId = std::this_thread::get_id();
 }
 
-std::string LogEventData::Level(LogLevel level)
+std::string LogEventData::Severity() const
+{
+  return _level[Level];
+}
+
+std::string LogEventData::Severity(LogLevel level)
 {
   return _level[level];
 }

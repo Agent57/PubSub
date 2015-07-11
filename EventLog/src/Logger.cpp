@@ -30,11 +30,12 @@ Logger::~Logger()
     return;
 
   m_running = false;
+  LogEventData pLog(Info, ElapsedTime(), "Application logging complete", __FILE__, __FUNCTION__, __LINE__);
+  QueueLogEvent(pLog);
+
   if (m_logger.joinable())
     m_logger.join();
 
-  LogEventData pLog(Info, ElapsedTime(), "Application logging complete", __FILE__, __FUNCTION__, __LINE__);
-  QueueLogEvent(pLog);
   ProcessLogEvents(m_queue);
 }
 
@@ -46,7 +47,11 @@ void Logger::Start()
   m_running = true;
 
   if (IsDebuggerPresent())
-    m_handlers.push_back(std::make_unique<IDELogger>());
+  {
+    LogEventHandlerPtr handler = std::make_unique<IDELogger>();
+    handler->SetLogWriter(std::make_unique<IDEWriter>());
+    m_handlers.push_back(move(handler));
+  }
 
   m_logger = std::thread(&Logger::LogWorker, this);
 }
@@ -55,19 +60,24 @@ void Logger::LogWorker()
 {
   while (m_running)
   {
-    WaitForQueuedEvent();
+    if (std::cv_status::timeout == WaitForQueuedEvent())
+      continue;
+
     auto buffer = BufferEventQueue();
     ProcessLogEvents(buffer);
   }
 }
 
-void Logger::WaitForQueuedEvent()
+std::cv_status Logger::WaitForQueuedEvent()
 {
+  auto result = std::cv_status::no_timeout;
   if (m_queue->empty())
   {
     std::unique_lock<std::mutex> lock(m_lock);
-    m_conditional.wait(lock);
+    result = m_conditional.wait_for(lock, std::chrono::milliseconds(500));
   }
+
+  return result;
 }
 
 Logger::LogEventQueuePtr Logger::BufferEventQueue()
@@ -83,17 +93,21 @@ void Logger::ProcessLogEvents(const LogEventQueuePtr& events)
   while (!events->empty())
   {
     const auto& pLog = events->front();
-    CallLogHandlers(pLog);
+    CallLogHandlers(*pLog);
     events->pop_front();
   }
 }
 
-void Logger::CallLogHandlers(const LogEventDataPtr& pLog)
+void Logger::CallLogHandlers(const LogEventData& event)
 {
   std::lock_guard<std::mutex> lock(m_handlerLock);
   for (const auto& handler : m_handlers)
   {
-    handler->HandleLogEvent(pLog);
+    if (!handler->ValidLogOutput(event))
+      continue;
+
+    handler->FormatLogOutput(event);
+    handler->OutputLogEvent();
   }
 }
 
@@ -134,7 +148,7 @@ void Logger::SetLogLevelImpl(LogLevel level)
   m_max_level = level;
 
   std::ostringstream ss;
-  ss << "Log output level set to " << LogEventData::Level(level);
+  ss << "Log output level set to " << LogEventData::Severity(level);
   LogEventData pLog(Info, ElapsedTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
   QueueLogEvent(pLog);
 }
@@ -157,8 +171,9 @@ bool Logger::IsEnabledImpl() const
   return m_enabled;
 }
 
-void Logger::AttachHandlerImpl(LogEventHandlerPtr pHandler)
+void Logger::AttachHandlerImpl(LogEventHandlerPtr pHandler, LogWriterPtr writer)
 {
+  pHandler->SetLogWriter(move(writer));
   std::lock_guard<std::mutex> lock(m_handlerLock);
   m_handlers.push_back(move(pHandler));
   Start();
@@ -166,7 +181,7 @@ void Logger::AttachHandlerImpl(LogEventHandlerPtr pHandler)
 
 bool Logger::CheckLogAccessImpl(LogLevel level) const
 {
-  return level <= m_max_level && m_enabled && m_running;
+  return m_enabled && m_running;
 }
 
 // Static accessor methods
@@ -195,9 +210,9 @@ bool Logger::IsEnabled()
   return Instance().IsEnabledImpl();
 }
 
-void Logger::AttachHandler(LogEventHandlerPtr pHandler)
+void Logger::AttachHandler(LogEventHandlerPtr handler, LogWriterPtr writer)
 {
-  Instance().AttachHandlerImpl(move(pHandler));
+  Instance().AttachHandlerImpl(move(handler), move(writer));
 }
 
 bool Logger::CheckLogAccess(LogLevel level)
