@@ -48,8 +48,9 @@ void Logger::Start()
 
   if (IsDebuggerPresent())
   {
-    LogEventHandlerPtr handler = std::make_unique<IDELogger>();
-    handler->SetLogWriter(std::make_unique<IDEWriter>());
+    auto handler = std::make_unique<LogEventHandler>();
+    handler->SetLogWriter(std::make_unique<IDELogWriter>());
+    handler->SetLogFormatter(std::make_unique<IDELogFormatter>());
     m_handlers.push_back(move(handler));
   }
 
@@ -101,12 +102,12 @@ void Logger::ProcessLogEvents(const LogEventQueuePtr& events)
 void Logger::CallLogHandlers(const LogEventData& event)
 {
   std::lock_guard<std::mutex> lock(m_handlerLock);
-  for (const auto& handler : m_handlers)
+  for (auto& handler : m_handlers)
   {
     if (!handler->ValidLogOutput(event))
       continue;
 
-    handler->FormatLogOutput(event);
+    handler->SetLogOutput(event);
     handler->OutputLogEvent();
   }
 }
@@ -171,11 +172,13 @@ bool Logger::IsEnabledImpl() const
   return m_enabled;
 }
 
-void Logger::AttachHandlerImpl(LogEventHandlerPtr pHandler, LogWriterPtr writer)
+void Logger::AttachHandlerImpl(LogFormatterPtr formatter, LogWriterPtr writer)
 {
-  pHandler->SetLogWriter(move(writer));
+  auto handler = std::make_unique<LogEventHandler>();
+  handler->SetLogFormatter(move(formatter));
+  handler->SetLogWriter(move(writer));
   std::lock_guard<std::mutex> lock(m_handlerLock);
-  m_handlers.push_back(move(pHandler));
+  m_handlers.push_back(move(handler));
   Start();
 }
 
@@ -210,9 +213,9 @@ bool Logger::IsEnabled()
   return Instance().IsEnabledImpl();
 }
 
-void Logger::AttachHandler(LogEventHandlerPtr handler, LogWriterPtr writer)
+void Logger::AttachHandler(LogFormatterPtr formatter, LogWriterPtr writer)
 {
-  Instance().AttachHandlerImpl(move(handler), move(writer));
+  Instance().AttachHandlerImpl(move(formatter), move(writer));
 }
 
 bool Logger::CheckLogAccess(LogLevel level)

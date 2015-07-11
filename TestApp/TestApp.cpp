@@ -19,7 +19,7 @@
 
 int main(int argc, char** argv)
 {
-  Logger::AttachHandler(std::make_unique<ConsoleLogger>(), std::make_unique<ConsoleWriter>());
+  Logger::AttachHandler(std::make_unique<ConsoleLogFormatter>(), std::make_unique<ConsoleLogWriter>());
   Logger::SetLogLevel(Trace);
   LogEvent(Info, "Application Running...");
   // Set up the handler for a RemoteSubscription message

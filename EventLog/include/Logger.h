@@ -55,7 +55,7 @@ class Logger
   void SetLogLevelImpl(LogLevel level);
   void SetEnabledImpl(bool enable);
   bool IsEnabledImpl() const;
-  void AttachHandlerImpl(LogEventHandlerPtr pHandler, LogWriterPtr writer);
+  void AttachHandlerImpl(LogFormatterPtr formatter, LogWriterPtr writer);
   bool CheckLogAccessImpl(const LogLevel level) const;
 
 public:
@@ -64,6 +64,6 @@ public:
   static void SetLogLevel(const LogLevel level);
   static void SetEnabled(bool enable);
   static bool IsEnabled();
-  static void AttachHandler(LogEventHandlerPtr handler, LogWriterPtr writer);
+  static void AttachHandler(LogFormatterPtr formatter, LogWriterPtr writer);
   static bool CheckLogAccess(LogLevel level);
 };

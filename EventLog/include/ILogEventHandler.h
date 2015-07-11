@@ -8,24 +8,39 @@ class ILogWriter
 {
 public:
   virtual ~ILogWriter() {}
-  virtual void WriteLogEvent(std::string) = 0;
+  virtual void WriteLogEvent(std::string) {};
 };
 typedef std::unique_ptr<ILogWriter> LogWriterPtr;
 
-class ILogEventHandler
+class ILogFormatter
 {
-protected:
+public:
+  virtual ~ILogFormatter() {}
+  virtual std::string FormatLogOutput(const LogEventData& event) { return ""; }
+};
+typedef std::unique_ptr<ILogFormatter> LogFormatterPtr;
+
+class LogEventHandler
+{
   LogLevel m_level;
   std::string m_text;
   LogWriterPtr m_writer;
+  LogFormatterPtr m_formatter;
 
 public:
-  virtual ~ILogEventHandler() {}
-  virtual void FormatLogOutput(const LogEventData& event) = 0;
-  
+  LogEventHandler()
+  {
+    m_level = Trace;
+  }
+
   void OutputLogEvent()
   {
     m_writer->WriteLogEvent(m_text);
+  }
+
+  void SetLogFormatter(LogFormatterPtr formatter)
+  {
+    m_formatter = move(formatter);
   }
 
   void SetLogWriter(LogWriterPtr writer)
@@ -38,15 +53,14 @@ public:
     m_level = level;
   }
   
-  void SetLogOutput(const std::string& text)
+  void SetLogOutput(const LogEventData& event)
   {
-    m_text = text;
+    m_text = m_formatter->FormatLogOutput(event);
   }
 
-  bool ValidLogOutput(const LogEventData& event)
+  bool ValidLogOutput(const LogEventData& event) const
   {
     return (event.Level <= m_level);
   }
 };
-
-typedef std::unique_ptr<ILogEventHandler> LogEventHandlerPtr;
+typedef std::unique_ptr<LogEventHandler> LogEventHandlerPtr;

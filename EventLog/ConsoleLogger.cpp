@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-void ConsoleLogger::FormatLogOutput(const LogEventData& event)
+std::string ConsoleLogFormatter::FormatLogOutput(const LogEventData& event)
 {
   // Format log message output for the console
   std::stringstream text;
@@ -12,10 +12,10 @@ void ConsoleLogger::FormatLogOutput(const LogEventData& event)
        << "  " << std::setw(5) << event.ThreadId << std::setfill(' ')
        << "  " << std::left << std::setw(9) << event.Severity()
        << event.Text << std::endl;
-  SetLogOutput(text.str());
+  return text.str();
 }
 
-void ConsoleWriter::WriteLogEvent(std::string text)
+void ConsoleLogWriter::WriteLogEvent(std::string text)
 {
   std::cout << text;
 }

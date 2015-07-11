@@ -5,7 +5,7 @@
 #include "IDELogger.h"
 
 
-void IDELogger::FormatLogOutput(const LogEventData& event)
+std::string IDELogFormatter::FormatLogOutput(const LogEventData& event)
 {
   // Format log message output for the Visual Studio Debugger
   std::stringstream text;
@@ -15,10 +15,10 @@ void IDELogger::FormatLogOutput(const LogEventData& event)
        << " [" << event.ThreadId << "] "
        << event.Severity() << ": "
        << event.Text << std::endl;
-  SetLogOutput(text.str());
+  return text.str();
 }
 
-void IDEWriter::WriteLogEvent(std::string text)
+void IDELogWriter::WriteLogEvent(std::string text)
 {
   OutputDebugString(text.c_str());
 }

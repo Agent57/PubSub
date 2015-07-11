@@ -2,19 +2,14 @@
 
 #include "ILogEventHandler.h"
 
-class IDEWriter : public ILogWriter
+class IDELogWriter : public ILogWriter
 {
 public:
   void WriteLogEvent(std::string) override;
 };
 
-class IDELogger : public ILogEventHandler
+class IDELogFormatter : public ILogFormatter
 {
 public:
-  IDELogger()
-  {
-    SetLogOutputLevel(Trace);
-  }
-
-  void FormatLogOutput(const LogEventData& event) override;
+  std::string FormatLogOutput(const LogEventData& event) override;
 };
