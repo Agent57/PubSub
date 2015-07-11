@@ -42,13 +42,13 @@ class Logger
   Logger& operator= (Logger const& copy);
   static Logger& Instance();
   ~Logger();
-
   void Start();
   void LogWorker();
   std::cv_status WaitForQueuedEvent();
   LogEventQueuePtr BufferEventQueue();
   void ProcessLogEvents(const LogEventQueuePtr& events);
   void CallLogHandlers(const LogEventData& event);
+  void SetDebuggerLogging();
 
   std::string ElapsedTimeImpl();
   void QueueLogEventImpl(const LogEventData& pLog);

@@ -4,7 +4,7 @@
 bool DomainManagementHandlers::Process(const std::shared_ptr<Exchange::RemoteSubscription const>& pMsg)
 {
   int subscriptionId = pMsg->subscriptionid();
-  m_domain.lock()->SetTimer(1500, nullptr);
+  m_domain.lock()->SetTimer(750, nullptr);
 
   std::ostringstream stringStream;
   stringStream << "Subscription Id: " << subscriptionId;

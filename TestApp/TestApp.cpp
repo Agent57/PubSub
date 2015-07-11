@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
   auto TimeoutMsg = std::make_shared<Exchange::StringParameter>();
   TimeoutMsg->set_data("Hello World");
-  SystemFrameworkY->SetTimer(2000, TimeoutMsg, true);
+  SystemFrameworkY->SetTimer(1000, TimeoutMsg, true);
 
   // Pause the console waiting on user input
   LogEvent(Info, "Press <Enter> key to exit...");

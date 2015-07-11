@@ -11,7 +11,7 @@ std::string IDELogFormatter::FormatLogOutput(const LogEventData& event)
   std::stringstream text;
   text << event.File
        << "(" << event.Line << "): "
-       << std::setfill('0') << std::setw(8) << event.DisplayTime
+       << event.DisplayTime
        << " [" << event.ThreadId << "] "
        << event.Severity() << ": "
        << event.Text << std::endl;

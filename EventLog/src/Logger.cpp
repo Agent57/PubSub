@@ -43,13 +43,7 @@ void Logger::Start()
   m_running = true;
   LogEvent(Special, "Application logging started");
 
-  if (IsDebuggerPresent())
-  {
-    auto handler = std::make_unique<LogEventHandler>();
-    handler->SetLogWriter(std::make_unique<IDELogWriter>());
-    handler->SetLogFormatter(std::make_unique<IDELogFormatter>());
-    m_handlers.push_back(move(handler));
-  }
+  SetDebuggerLogging();
 
   m_logger = std::thread(&Logger::LogWorker, this);
 }
@@ -106,6 +100,17 @@ void Logger::CallLogHandlers(const LogEventData& event)
 
     handler->SetLogOutput(event);
     handler->OutputLogEvent();
+  }
+}
+
+void Logger::SetDebuggerLogging()
+{
+  if (IsDebuggerPresent())
+  {
+    auto handler = std::make_unique<LogEventHandler>();
+    handler->SetLogWriter(std::make_unique<IDELogWriter>());
+    handler->SetLogFormatter(std::make_unique<IDELogFormatter>());
+    m_handlers.push_back(move(handler));
   }
 }
 
