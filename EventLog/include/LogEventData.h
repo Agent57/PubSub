@@ -6,6 +6,7 @@
 
 typedef enum
 {
+  Special,
   Fatal,
   Error,
   Warning,

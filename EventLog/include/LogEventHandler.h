@@ -19,7 +19,7 @@ public:
   void OutputLogEvent();
   void SetLogFormatter(LogFormatterPtr formatter);
   void SetLogWriter(LogWriterPtr writer);
-  void SetLogOutputLevel(LogLevel level);
+  bool SetLogOutputLevel(LogLevel level);
   void SetLogOutput(const LogEventData& event);
   bool ValidLogOutput(const LogEventData& event) const;
 };

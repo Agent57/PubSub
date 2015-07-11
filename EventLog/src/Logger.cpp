@@ -13,9 +13,6 @@ Logger::Logger()
   m_enabled =  true;
   m_max_level = Info;
   m_running = false;
-
-  LogEventData pLog(Info, ElapsedTime(), "Application logging started", __FILE__, __FUNCTION__, __LINE__);
-  QueueLogEvent(pLog);
 }
 
 Logger& Logger::Instance()
@@ -29,9 +26,8 @@ Logger::~Logger()
   if (!m_running)
     return;
 
+  LogEvent(Special, "Application logging complete");
   m_running = false;
-  LogEventData pLog(Info, ElapsedTime(), "Application logging complete", __FILE__, __FUNCTION__, __LINE__);
-  QueueLogEvent(pLog);
 
   if (m_logger.joinable())
     m_logger.join();
@@ -45,6 +41,7 @@ void Logger::Start()
     return;
 
   m_running = true;
+  LogEvent(Special, "Application logging started");
 
   if (IsDebuggerPresent())
   {
@@ -143,15 +140,15 @@ void Logger::QueueLogEventImpl(const LogEventData& pLog)
 
 void Logger::SetLogLevelImpl(LogLevel level)
 {
-  if (m_max_level == level)
-    return;
+  bool result;
 
-  m_max_level = level;
+  for (auto& handler : m_handlers)
+  {
+    result |= handler->SetLogOutputLevel(level);
+  }
 
-  std::ostringstream ss;
-  ss << "Log output level set to " << LogEventData::Severity(level);
-  LogEventData pLog(Info, ElapsedTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
-  QueueLogEvent(pLog);
+  if (result)
+    LogEvent(Special, "Log output level set to " << LogEventData::Severity(level));
 }
 
 void Logger::SetEnabledImpl(bool enable)
@@ -160,11 +157,7 @@ void Logger::SetEnabledImpl(bool enable)
     return;
 
   m_enabled = enable;
-
-  std::ostringstream ss;
-  ss << "Logging output is now " << (m_enabled ? "enabled" : "disabled");
-  LogEventData pLog(Info, ElapsedTime(), ss.str(), __FILE__, __FUNCTION__, __LINE__);
-  QueueLogEvent(pLog);
+  LogEvent(Special, "Logging output is now " << (m_enabled ? "enabled" : "disabled"));
 }
 
 bool Logger::IsEnabledImpl() const

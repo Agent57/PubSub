@@ -2,7 +2,7 @@
 
 LogEventHandler::LogEventHandler()
 {
-  m_level = Trace;
+  m_level = Info;
 }
 
 void LogEventHandler::OutputLogEvent()
@@ -20,9 +20,13 @@ void LogEventHandler::SetLogWriter(LogWriterPtr writer)
   m_writer = move(writer);
 }
 
-void LogEventHandler::SetLogOutputLevel(LogLevel level)
+bool LogEventHandler::SetLogOutputLevel(LogLevel level)
 {
+  if (m_level == level || m_level == Special)
+    return false;
+
   m_level = level;
+  return true;
 }
 
 void LogEventHandler::SetLogOutput(const LogEventData& event)

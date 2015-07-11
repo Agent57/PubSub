@@ -2,6 +2,7 @@
 
 const std::string LogEventData::_level[] =
 {
+  "Info",
   "Fatal",
   "Error",
   "Warning",
